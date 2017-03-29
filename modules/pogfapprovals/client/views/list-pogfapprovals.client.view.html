@@ -1,0 +1,42 @@
+<section>
+  <div class="page-header">
+    <h1>Outgoing File Approval</h1>
+  </div>
+  <table class="table table-bordered">
+    <tr>
+      <th>Process Id</th>
+      <th>Last Task</th>
+      <th>Status</th>
+    </tr>
+    <tr ng-repeat="pogfapproval in vm.pogfapprovals">
+      <td><a ui-sref="pogfapprovals.edit({ pogfapprovalId: pogfapproval.processId })"><span ng-bind="pogfapproval.processId"></span></a> &nbsp;&nbsp;
+      <a data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></a></td>
+      <td><span ng-bind="pogfapproval.properties.task"></span></td>
+      <td><span ng-bind="pogfapproval.properties.status"></span></td>
+    </tr>
+  </table>
+  <div class="alert alert-warning text-center" ng-if="vm.pogfapprovals.$resolved && !vm.pogfapprovals.length">
+    No Pogfapprovals yet, why don't you <a ui-sref="pogfapprovals.create">create one</a>?
+  </div>
+  
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        <div id="bpm-viewer">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</section>

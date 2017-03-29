@@ -1,0 +1,26 @@
+<section>
+  <div class="page-header">
+    <h1 ng-bind="vm.uploadfile.name"></h1>
+  </div>
+  <div class="pull-right"
+       ng-show="vm.uploadfile.isCurrentUserOwner">
+    <a class="btn btn-primary"
+       ui-sref="uploadfiles.edit({ uploadfileId: vm.uploadfile._id })">
+      <i class="glyphicon glyphicon-edit"></i>
+    </a>
+    <a class="btn btn-primary" ng-click="vm.remove()">
+      <i class="glyphicon glyphicon-trash"></i>
+    </a>
+  </div>
+  <small>
+    <em class="text-muted">
+      Posted on
+      <span ng-bind="vm.uploadfile.created | date:'mediumDate'"></span>
+      by
+      <span ng-if="vm.uploadfile.user"
+            ng-bind="vm.uploadfile.user.displayName"></span>
+      <span ng-if="!vm.uploadfile.user">Deleted User</span>
+    </em>
+  </small>
+  <p class="lead" ng-bind="vm.uploadfile.content"></p>
+</section>
