@@ -10,12 +10,6 @@ var mongoose = require('mongoose'),
  * Pogfapproval Schema
  */
 var PogfapprovalSchema = new Schema({
-  name: {
-    type: String,
-    default: '',
-    required: 'Please fill Pogfapproval name',
-    trim: true
-  },
   created: {
     type: Date,
     default: Date.now
@@ -23,6 +17,20 @@ var PogfapprovalSchema = new Schema({
   user: {
     type: Schema.ObjectId,
     ref: 'User'
+  },
+  purpose: {
+    type: String,
+    default: '',
+    required: 'Please fill Purpose'
+  },
+  outgoingFileDesc: {
+    type: String
+  },
+  approval: {
+    type: String
+  },
+  comment: {
+    type: String
   }
 });
 

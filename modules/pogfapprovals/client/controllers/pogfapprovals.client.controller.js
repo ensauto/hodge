@@ -32,6 +32,7 @@
         return false;
       }
       
+      var submitType = vm.pogfapproval.submitType;
       // TODO: move create/update logic to service
       if (vm.pogfapproval._id) {
         vm.pogfapproval.$update(successCallback, errorCallback);
@@ -40,9 +41,17 @@
       }
 
       function successCallback(res) {
-        $state.go('pogfapprovals.view', {
-          pogfapprovalId: res._id
-        });
+        if (submitType === 'taskDone') {
+            $state.go('pogfapprovals.list');
+        }
+        if (submitType === 'update') {
+            $state.reload();
+        }
+        if (submitType === 'create') {
+            $state.go('pogfapprovals.edit', {
+              pogfapprovalId: res._id
+            });
+        }
       }
 
       function errorCallback(res) {

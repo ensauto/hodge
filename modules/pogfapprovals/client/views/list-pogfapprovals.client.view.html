@@ -2,15 +2,22 @@
   <div class="page-header">
     <h1>Outgoing File Approval</h1>
   </div>
-  <table class="table table-bordered">
+  <table class="table table-bordered table-condensed table-hover">
     <tr>
       <th>Process Id</th>
+      <th>Created By</th>
+      <th>Created</th>
       <th>Last Task</th>
       <th>Status</th>
     </tr>
     <tr ng-repeat="pogfapproval in vm.pogfapprovals">
-      <td><a ui-sref="pogfapprovals.edit({ pogfapprovalId: pogfapproval.processId })"><span ng-bind="pogfapproval.processId"></span></a> &nbsp;&nbsp;
-      <a data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></a></td>
+      <td><a ui-sref="pogfapprovals.edit({ pogfapprovalId: pogfapproval.processId })"><span ng-bind="pogfapproval.processId"></span></a> 
+      <!--
+      <a data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></a>
+      -->
+      </td>
+      <td><span ng-bind="pogfapproval.properties.createdBy"></span></td>
+      <td><span ng-bind="pogfapproval.created"></span></td>
       <td><span ng-bind="pogfapproval.properties.task"></span></td>
       <td><span ng-bind="pogfapproval.properties.status"></span></td>
     </tr>

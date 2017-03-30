@@ -61,7 +61,7 @@ exports.create = function(req, res) {
       });
     }
   ], function(err, file) { 
-    var uploadfile = new Uploadfile({processName: processName, processId: processId, fileFieldName: file.fieldname, filename: file.filename, mimetype: file.mimetype, fileOriginalName: file.originalname, openaccess: false});
+    var uploadfile = new Uploadfile({processName: processName, processId: processId, fileFieldName: file.fieldname, filename: file.filename, mimeType: file.mimetype, fileOriginalName: file.originalname, openaccess: false});
     uploadfile.user = req.user;
     uploadfile.save(function(err) {
       if (err) {
@@ -87,8 +87,26 @@ exports.read = function(req, res) {
   // Add a custom field to the Article, for determining if the current User is the "owner".
   // NOTE: This field is NOT persisted to the database, since it doesn't exist in the Article model.
   uploadfile.isCurrentUserOwner = req.user && uploadfile.user && uploadfile.user._id.toString() === req.user._id.toString();
-
-  res.jsonp(uploadfile);
+  var get = req.query.get;
+  if (get != 'download') {
+    res.jsonp(uploadfile);
+  }
+  var processName = uploadfile.processName;
+  console.log(processName);
+  switch(processName) {
+    case 'ogfapproval':
+      if(uploadfile.user._id === req.user._id || req.user.roles.indexOf('ogfapprover')) {
+        //res.download()path.resolve('./modules/core/server/controllers/errors.server.controller')
+        res.download(path.resolve('/storage.hodge/uploads.process/' + uploadfile.processName + '-' + uploadfile.processId + '-' + uploadfile.fileFieldName + '-' + uploadfile.filename + '.' + uploadfile.mimeType.split('/')[1]));
+        //res.end();
+      }
+      break;
+    case 'approval':
+      break;
+    default:
+        ;
+  }
+   
 };
 
 /**

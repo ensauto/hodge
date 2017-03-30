@@ -12,7 +12,9 @@ var path = require('path'),
   _ = require('lodash'),
   async = require('async'),
   bpmn = require("bpmn"),
-  fs = require('fs');
+  fs = require('fs'),
+  moment = require('moment');
+
 var manager = new bpmn.ProcessManager({
       persistencyOptions: {
           uri: "mongodb://admin:admin@ds137220.mlab.com:37220/hodge"
@@ -25,6 +27,8 @@ manager.addBpmnFilePath(path.resolve('./modules/pogfapprovals/server/bpmn/pogfap
  * Create a Pogfapproval
  */
 exports.create = function(req, res) {
+  delete req.body.approval;
+  delete req.body.comment;
   var pogfapproval = new Pogfapproval(req.body);
   pogfapproval.user = req.user;
 
@@ -66,16 +70,19 @@ exports.read = function(req, res) {
   async.waterfall([
     function(callback) {
       Uploadfile.find({processName: 'ogfapproval', processId: pogfapproval._id + ''}).exec(function(err, files) {
-        callback(null, files);
+        pogfapproval.files = files;
+        callback(null);
       })    
+    }, 
+    function(callback) {
+      PogfapprovalProcess.findOne({processId: pogfapproval._id + '' }).exec(function(err, process) {
+        pogfapproval.process = process;
+        callback(null);
+      })
     }
   ], function(err, files) {
-    pogfapproval.files = files;
     res.jsonp(pogfapproval);  
   });
-  
-  
-
   
 };
 
@@ -96,8 +103,20 @@ exports.update = function(req, res) {
       })
     }, 
     function(myProcess, callback) {
+      var taskName = myProcess.getProperty('task');
       if (submitType === 'update') {
-        pogfapproval = _.extend(pogfapproval, req.body);
+        switch(taskName) {
+          case 'draft': 
+            delete req.body.approval;
+            delete req.body.comment;
+            pogfapproval = _.extend(pogfapproval, req.body);
+            break;
+          case 'approval': 
+            delete req.body.purpose;
+            delete req.body.outgoingFileDesc;
+            pogfapproval = _.extend(pogfapproval, req.body);
+            break;
+        }
 
         pogfapproval.save(function(err) {
           if (err) {
@@ -109,7 +128,6 @@ exports.update = function(req, res) {
           }
         });  
       } else if (submitType === 'taskDone') {
-        var taskName = myProcess.getProperty('task');console.log(1 + taskName);
         switch(taskName) {
           case 'draft':
               myProcess.taskDone(taskName, {req: req});
@@ -161,7 +179,6 @@ exports.list = function(req, res) {//
         message: errorHandler.getErrorMessage(err)
       });
     } else { 
-
       processes = _.filter(processes, function(o) { 
         var foundRole = false;
         _.forEach(req.user.roles, function(role) {
@@ -174,14 +191,12 @@ exports.list = function(req, res) {//
         foundUser = o.properties.users.indexOf(req.user._id + '');
         return foundUser || foundRole;
       });
+      _.forEach(processes, function(process){
+
+      })
       var bpmnXML = fs.readFileSync(path.resolve('./modules/pogfapprovals/server/bpmn/pogfapproval.bpmn'), {encoding: 'utf-8'})
       console.log(bpmnXML);
-      var returnObj = {};
-      returnObj.pogfapprovals = processes;
-      returnObj.bpmnXML = bpmnXML;
-
-      console.log(returnObj.pogfapprovals.length);
-      res.jsonp(processes);
+      res.json(processes);
     }
   });
 };

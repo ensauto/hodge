@@ -1,4 +1,4 @@
-<section>
+<section >
   <style>
       .my-drop-zone { border: dotted 3px lightgray; }
       .nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
@@ -8,26 +8,43 @@
   <div class="page-header">
     <h1>{{vm.pogfapproval._id ? 'Edit Outgoing File Approval' : 'New Outgoing File Approval'}}</h1>
   </div>
-  <div class="col-md-12"  nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+  <div class="col-md-12" style="background-color: #FAF0E6" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
     <form name="vm.form.pogfapprovalForm" class="form-horizontal" ng-submit="vm.save(vm.form.pogfapprovalForm.$valid)" novalidate>
       <fieldset>
+        <div class="form-group">
+          <button type="submit" class="btn btn-default" ng-click="vm.pogfapproval.submitType='create'" ng-show="!vm.pogfapproval._id">Create</button>
+          <button type="submit" class="btn btn-default" ng-click="vm.pogfapproval.submitType='update'" ng-show="vm.pogfapproval._id">Update</button>
+          <input class="btn btn-default" type="submit" value="Task Done" ng-click="vm.pogfapproval.submitType='taskDone'" ng-show="vm.pogfapproval._id">
+          <a class="btn btn-default" ui-sref="pogfapprovals.list">Close</a>
+        </div>
+        <div class="form-group" show-errors ng-show="vm.pogfapproval._id">
+          <label class="control-label" for="name">Created By</label>
+          <span ng-bind="vm.pogfapproval.user.displayName"></span>
+          <label class="control-label" for="name">Task</label>
+          <span ng-bind="vm.pogfapproval.process.properties.task"></span>
+        </div>
         <div class="form-group" show-errors>
-          <label class="control-label" for="name">Name</label>
-          <input name="name" type="text" ng-model="vm.pogfapproval.name" id="name" class="form-control" placeholder="Name" required>
-          <div ng-messages="vm.form.pogfapprovalForm.name.$error" role="alert">
-            <p class="help-block error-text" ng-message="required">Pogfapproval name is required.</p>
+          <label class="control-label" for="name">Purpose</label>
+          <input name="purpose" type="text" ng-model="vm.pogfapproval.purpose" id="purpose" class="form-control" placeholder="Purpose" required>
+          <div ng-messages="vm.form.pogfapprovalForm.purpose.$error" role="alert">
+            <p class="help-block error-text" ng-message="required">Pogfapproval purpose is required.</p>
           </div>
+        </div>
+        <div class="form-group" show-errors>
+          <label class="control-label" for="name">Outgoing File Description</label>
+          <textarea name="outgoingFileDesc" type="text" ng-model="vm.pogfapproval.outgoingFileDesc" id="outgoingFileDesc" class="form-control" placeholder="Outgoing File Description">
+          </textarea>
         </div>
         <div class="form-group" ng-show="vm.pogfapproval._id">
           <label class="control-label" for="name">Uploaded Files</label>
           <ul class="list-group">
             <li class="list-group-item" ng-repeat="file in vm.pogfapproval.files">
-              <a>{{file.fileOriginalName}}</a>
+              <a href="/api/uploadfiles/{{file._id}}?get=download" download="{{file.fileOriginalName}}" target="_self" role="button">{{file.fileOriginalName}}</a>
+               http://ds.com/api/uploadfiles/{{file._id}}?get=download
             </li>
           </ul>
         </div>
-        
-        
+
         <div class="row" ng-show="vm.pogfapproval._id">
 
           <div class="col-md-3">
@@ -109,14 +126,27 @@
           </div>
 
         </div>
+
+        <h3>Approver Section</h3>
         <div class="form-group">
-          <button type="submit" class="btn btn-default" ng-click="vm.pogfapproval.submitType='update'">{{vm.pogfapproval._id ? 'Update' : 'Create'}}</button>
-          <input class="btn btn-default" type="submit" value="Task Done" ng-click="vm.pogfapproval.submitType='taskDone'" ng-show="vm.pogfapproval._id">
+        <label class="control-label" for="approval">Approval Status</label>
+          <select name="approval" id="approval" data-ng-model="vm.pogfapproval.approval" class="form-control" placeholder="Approval Status">
+              <option value="approved">Approve</option>
+              <option value="rejected">Reject</option>
+          </select>
         </div>
+        <div class="form-group" show-errors>
+          <label class="control-label" for="name">Comment</label>
+          <textarea name="comment" type="text" ng-model="vm.pogfapproval.comment" id="name" class="form-control" placeholder="Comment">
+          </textarea>
+        </div>
+
         <div ng-show="vm.error" class="text-danger">
           <strong ng-bind="vm.error"></strong>
         </div>
       </fieldset>
+      
+
     </form>
   </div>
 </section>
