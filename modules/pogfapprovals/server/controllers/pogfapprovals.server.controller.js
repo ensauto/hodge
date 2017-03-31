@@ -7,6 +7,7 @@ var path = require('path'),
   mongoose = require('mongoose'),
   Pogfapproval = mongoose.model('Pogfapproval'),
   PogfapprovalProcess = mongoose.model('PogfapprovalProcess'),
+  User = mongoose.model('User'),
   Uploadfile = mongoose.model('Uploadfile'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash'),
@@ -69,16 +70,57 @@ exports.read = function(req, res) {
   pogfapproval.isCurrentUserOwner = req.user && pogfapproval.user && pogfapproval.user._id.toString() === req.user._id.toString();
   async.waterfall([
     function(callback) {
+      PogfapprovalProcess.findOne({processId: pogfapproval._id + '' }).exec(function(err, processOne) {
+        var processRoles = processOne.properties.roles;
+        var permitAccess = false;
+        var userRoles = req.user.roles;
+        _.forEach(userRoles, function(userRole) {
+          if (processRoles.indexOf(userRole)) {
+            permitAccess = true;
+          }
+        });
+        if (!permitAccess) {
+          return res.status(401).send({
+            message: 'Unauthorized'
+          });
+        }
+
+        var historyEntries = processOne.history.historyEntries;
+        var uncompletedTasksHistoryEntries = _.filter(historyEntries, function(h){ return h.end === null });
+        var ongoingTasks = "";
+        _.forEach(uncompletedTasksHistoryEntries, function(ogTask) {
+          if (ongoingTasks === "") {
+            ongoingTasks = ongoingTasks + ogTask.name + ' (' + moment(ogTask.begin).fromNow() + ')';
+          } else {
+            ongoingTasks = ongoingTasks + ', ' + ogTask.name + ' (' + moment(ogTask.begin).fromNow() + ')';
+          }
+        })
+        var historyTrace = "";
+        _.forEach(historyEntries, function(h){
+          if (historyTrace === "") {
+            historyTrace = historyTrace + h.name;
+          } else {
+            historyTrace = historyTrace + ' -> ' + h.name; 
+          }
+        });
+        if (historyTrace === "") {
+          historyTrace = "-";
+        }
+        if (ongoingTasks === "") {
+          ongoingTasks = "-";
+        }
+        processOne = processOne.toJSON();
+        processOne["historyTrace"] = historyTrace;
+        processOne["ongoingTasks"] = ongoingTasks;
+        pogfapproval.process = processOne;
+        callback(null);
+      })
+    },
+    function(callback) {
       Uploadfile.find({processName: 'ogfapproval', processId: pogfapproval._id + ''}).exec(function(err, files) {
         pogfapproval.files = files;
         callback(null);
-      })    
-    }, 
-    function(callback) {
-      PogfapprovalProcess.findOne({processId: pogfapproval._id + '' }).exec(function(err, process) {
-        pogfapproval.process = process;
-        callback(null);
-      })
+      }) 
     }
   ], function(err, files) {
     res.jsonp(pogfapproval);  
@@ -104,42 +146,49 @@ exports.update = function(req, res) {
     }, 
     function(myProcess, callback) {
       var taskName = myProcess.getProperty('task');
+      var tokens = myProcess.state.tokens;
       if (submitType === 'update') {
-        switch(taskName) {
-          case 'draft': 
-            delete req.body.approval;
-            delete req.body.comment;
-            pogfapproval = _.extend(pogfapproval, req.body);
-            break;
-          case 'approval': 
-            delete req.body.purpose;
-            delete req.body.outgoingFileDesc;
-            pogfapproval = _.extend(pogfapproval, req.body);
-            break;
-        }
-
-        pogfapproval.save(function(err) {
-          if (err) {
-            return res.status(400).send({
-              message: errorHandler.getErrorMessage(err)
-            });
-          } else {
-            res.jsonp(pogfapproval);
+        _.forEach(tokens, function(token){
+          var reqBody = _.extend({}, req.body);
+          switch(token.position) {
+            case 'draft': 
+              delete reqBody.approval;
+              delete reqBody.comment;
+              pogfapproval = _.extend(pogfapproval, reqBody);
+              break;
+            case 'approval': 
+              delete reqBody.purpose;
+              delete reqBody.outgoingFileDesc;
+              pogfapproval = _.extend(pogfapproval, reqBody);
+              break;
           }
-        });  
+          pogfapproval.save(function(err) {
+            if (err) {
+              return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+              });
+            } else {
+            }
+          });  
+          
+        });
+        res.jsonp(pogfapproval);
+        
       } else if (submitType === 'taskDone') {
-        switch(taskName) {
-          case 'draft':
-              myProcess.taskDone(taskName, {req: req});
-              break;
-          case 'approval':
-              myProcess.taskDone(taskName, {req: req});
-              myProcess.taskDone('approved', {req: req});
-              myProcess.taskDone('rejected', {req: req});
-              break;
-          default:
-              ;
-        } 
+        _.forEach(tokens, function(token) {
+          switch(token.position) {
+            case 'draft':
+                myProcess.taskDone(token.position, {req: req});
+                break;
+            case 'approval':
+                myProcess.taskDone(token.position, {req: req});
+                myProcess.taskDone('approved', {req: req});
+                myProcess.taskDone('rejected', {req: req});
+                break;
+            default:
+                ;
+          } 
+        });
         res.jsonp(pogfapproval);
       }    
     }
@@ -179,6 +228,7 @@ exports.list = function(req, res) {//
         message: errorHandler.getErrorMessage(err)
       });
     } else { 
+
       processes = _.filter(processes, function(o) { 
         var foundRole = false;
         _.forEach(req.user.roles, function(role) {
@@ -187,16 +237,39 @@ exports.list = function(req, res) {//
           }
         })
         var foundUser = false;
-        console.log(o.properties.users[0] + ' ' + req.user._id + '');
         foundUser = o.properties.users.indexOf(req.user._id + '');
         return foundUser || foundRole;
       });
-      _.forEach(processes, function(process){
+      var retProcesses = [];
+      _.forEach(processes, function(processOne){
 
-      })
-      var bpmnXML = fs.readFileSync(path.resolve('./modules/pogfapprovals/server/bpmn/pogfapproval.bpmn'), {encoding: 'utf-8'})
-      console.log(bpmnXML);
-      res.json(processes);
+        var historyEntries = processOne.history.historyEntries;
+        var uncompletedTasksHistoryEntries = _.filter(historyEntries, function(h){ return h.end === null });
+        var ongoingTasks = "";
+        _.forEach(uncompletedTasksHistoryEntries, function(ogTask) {
+          if (ongoingTasks === "") {
+            ongoingTasks = ongoingTasks + ogTask.name + ' (' + moment(ogTask.begin).fromNow() + ')';
+          } else {
+            ongoingTasks = ongoingTasks + ', ' + ogTask.name + ' (' + moment(ogTask.begin).fromNow() + ')';
+          }
+        })
+        var historyTrace = "";
+        _.forEach(historyEntries, function(h){
+          if (historyTrace === "") {
+            historyTrace = historyTrace + h.name;
+          } else {
+            historyTrace = historyTrace + ' > ' + h.name; 
+          }
+        })
+        var startFlow = _.find(historyEntries, function(h){ return h.name === 'start'});
+        processOne = processOne.toJSON();
+        processOne.startTime = moment(startFlow.begin).fromNow();
+        processOne.ongoingTasks = ongoingTasks;
+        processOne.historyTrace = historyTrace;
+        processOne.processedBy = processOne.properties.processedBy;
+        retProcesses.push(processOne);
+      });
+      res.json(retProcesses);
     }
   });
 };

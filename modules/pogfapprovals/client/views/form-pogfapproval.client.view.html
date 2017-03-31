@@ -8,7 +8,7 @@
   <div class="page-header">
     <h1>{{vm.pogfapproval._id ? 'Edit Outgoing File Approval' : 'New Outgoing File Approval'}}</h1>
   </div>
-  <div class="col-md-12" style="background-color: #FAF0E6" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+  <div class="col-md-12 panel panel-primary" style="background-color: #FAF0E6" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
     <form name="vm.form.pogfapprovalForm" class="form-horizontal" ng-submit="vm.save(vm.form.pogfapprovalForm.$valid)" novalidate>
       <fieldset>
         <div class="form-group">
@@ -20,8 +20,10 @@
         <div class="form-group" show-errors ng-show="vm.pogfapproval._id">
           <label class="control-label" for="name">Created By</label>
           <span ng-bind="vm.pogfapproval.user.displayName"></span>
-          <label class="control-label" for="name">Task</label>
-          <span ng-bind="vm.pogfapproval.process.properties.task"></span>
+          <label class="control-label" for="name">Ongoing Tasks</label>
+          <span ng-bind="vm.pogfapproval.process.ongoingTasks"></span>
+          <label class="control-label" for="name">History Trace</label>
+          <span ng-bind="vm.pogfapproval.process.historyTrace"></span>
         </div>
         <div class="form-group" show-errors>
           <label class="control-label" for="name">Purpose</label>
