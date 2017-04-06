@@ -9,6 +9,7 @@ var path = require('path'),
   PogfapprovalProcess = mongoose.model('PogfapprovalProcess'),
   User = mongoose.model('User'),
   Uploadfile = mongoose.model('Uploadfile'),
+  Userprocess = mongoose.model('Userprocess'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash'),
   async = require('async'),
@@ -27,12 +28,12 @@ manager.addBpmnFilePath(path.resolve('./modules/pogfapprovals/server/bpmn/pogfap
 /**
  * Create a Pogfapproval
  */
-exports.create = function(req, res) {
+exports.create = function(req, res) {console.log('create');
   delete req.body.approval;
   delete req.body.comment;
   var pogfapproval = new Pogfapproval(req.body);
   pogfapproval.user = req.user;
-
+  console.log("c1");
   async.waterfall([
     function(callback) {
       pogfapproval.save(function(err) {
@@ -190,6 +191,27 @@ exports.update = function(req, res) {
           } 
         });
         res.jsonp(pogfapproval);
+
+        // Side-effect of task done, update Userprocess
+        console.log("1");
+        Userprocess.findOne({user: req.user._id}).exec(function(err, userProcess){
+          if (!userProcess) {
+            Userprocess.create({user: req.user._id, taskDone: [{"processName": "pogfapproval", "processId": pogfapproval._id + ""}]}, function(err){ if(err) {console.log(err.message)}});
+          } else {
+            var taskDone = userProcess.taskDone;console.log("2");
+            var processIdExist = false;
+            _.forEach(taskDone, function(tD) {
+              if(tD.processId === (pogfapproval._id + '')) {
+                processIdExist = true;
+              }
+            })
+            if (!processIdExist) {
+              userProcess.taskDone.push({"processName": "pogfapproval", "processId": pogfapproval._id + "" });console.log('save');
+              userProcess.save(function(err) {console.log("210");
+              });  
+            }
+          }
+        });
       }    
     }
     ], function(err, result) {
@@ -238,7 +260,15 @@ exports.list = function(req, res) {//
         })
         var foundUser = false;
         foundUser = o.properties.users.indexOf(req.user._id + '');
-        return foundUser || foundRole;
+        var status = o.properties.status;
+        var endStatus = ['approved', 'rejected'];
+        console.log(endStatus.indexOf(status)); 
+        if ( endStatus.indexOf(status) != -1 ) {
+          return false;
+        } else {
+          return foundUser || foundRole;  
+        }
+        
       });
       var retProcesses = [];
       _.forEach(processes, function(processOne){

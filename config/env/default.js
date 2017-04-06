@@ -32,6 +32,16 @@ module.exports = {
   // sessionKey is the cookie session name
   sessionKey: 'sessionId',
   sessionCollection: 'sessions',
+  //ldap config
+  OPTS: {
+    server: {
+      url: 'ldap://192.168.1.98:389',
+      bindDn: 'cn=icfile, ou=IT, ou=Buildwin, dc=buildwin, dc=com',
+      bindCredentials: '$8Ecjzm39t',
+      searchBase: 'ou=Buildwin, dc=buildwin, dc=com',
+      searchFilter: '(sAMAccountName={{username}})'
+    }
+  },
   // Lusca config
   csrf: {
     csrf: false,

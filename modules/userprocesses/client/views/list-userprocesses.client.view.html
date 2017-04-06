@@ -1,0 +1,22 @@
+<section>
+  <div class="page-header">
+    <h1>Userprocesses</h1>
+  </div>
+  <div class="list-group">
+    <a ng-repeat="userprocess in vm.userprocesses"
+       ui-sref="userprocesses.view({ userprocessId: userprocess._id })"
+       class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span ng-bind="userprocess.created | date:'mediumDate'"></span>
+        by
+        <span ng-if="userprocess.user" ng-bind="userprocess.user.displayName"></span>
+        <span ng-if="!userprocess.user">Deleted User</span>
+      </small>
+      <h4 class="list-group-item-heading" ng-bind="userprocess.name"></h4>
+    </a>
+  </div>
+  <div class="alert alert-warning text-center" ng-if="vm.userprocesses.$resolved && !vm.userprocesses.length">
+    No Userprocesses yet, why don't you <a ui-sref="userprocesses.create">create one</a>?
+  </div>
+</section>

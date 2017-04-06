@@ -61,7 +61,7 @@ exports.create = function(req, res) {
       });
     }
   ], function(err, file) { 
-    var uploadfile = new Uploadfile({processName: processName, processId: processId, fileFieldName: file.fieldname, filename: file.filename, mimeType: file.mimetype, fileOriginalName: file.originalname, openaccess: false});
+    var uploadfile = new Uploadfile({processName: processName, processId: processId, fileFieldName: file.fieldname, filename: file.filename, mimeType: file.mimetype, fileOriginalName: file.originalname, openAccess: false});
     uploadfile.user = req.user;
     uploadfile.save(function(err) {
       if (err) {

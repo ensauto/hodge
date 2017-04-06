@@ -13,7 +13,7 @@
       title: 'Outgoing File Approval',
       state: 'pogfapprovals',
       type: 'dropdown',
-      roles: ['*']
+      roles: ['user']
     });
 
     // Add the dropdown list item
@@ -27,6 +27,12 @@
       title: 'Create Outgoing File Approval',
       state: 'pogfapprovals.create',
       roles: ['user']
+    });
+
+    // Add the dropdown list item
+    menuService.addSubMenuItem('topbar', 'pogfapprovals', {
+      title: 'Task Done',
+      state: 'pogfapprovals.taskdone'
     });
   }
 }());

@@ -1,3 +1,5 @@
+var mongoose = require('mongoose'),
+Uploadfile = mongoose.model('Uploadfile');
 exports.start = function(data, done) {
 	done(data);
 };
@@ -53,7 +55,10 @@ exports.approved = function(data, done) {
 	var users = [this.getProperty('createdBy')];
 	this.setProperty('users', users);
 	this.setProperty('status', 'approved');
-	done(data);
+	var req = data.req;
+	Uploadfile.update({processId: req.pogfapproval._id + ''}, {$set: { openAccess: true }}).exec(function(err){
+		done(data);	
+	});
 };
 
 exports.approvedDone = function(data, done) {

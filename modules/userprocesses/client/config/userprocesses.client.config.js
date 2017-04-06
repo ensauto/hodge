@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('uploadfiles')
+    .module('userprocesses')
     .run(menuConfig);
 
   menuConfig.$inject = ['menuService'];
@@ -10,22 +10,22 @@
   function menuConfig(menuService) {
     // Set top bar menu items
     menuService.addMenuItem('topbar', {
-      title: 'Uploadfiles',
-      state: 'uploadfiles',
+      title: 'Userprocesses',
+      state: 'userprocesses',
       type: 'dropdown',
       roles: ['user']
     });
 
     // Add the dropdown list item
-    menuService.addSubMenuItem('topbar', 'uploadfiles', {
-      title: 'List Uploadfiles',
-      state: 'uploadfiles.list'
+    menuService.addSubMenuItem('topbar', 'userprocesses', {
+      title: 'List Userprocesses',
+      state: 'userprocesses.list'
     });
 
     // Add the dropdown create item
-    menuService.addSubMenuItem('topbar', 'uploadfiles', {
-      title: 'Create Uploadfile',
-      state: 'uploadfiles.create',
+    menuService.addSubMenuItem('topbar', 'userprocesses', {
+      title: 'Create Userprocess',
+      state: 'userprocesses.create',
       roles: ['user']
     });
   }

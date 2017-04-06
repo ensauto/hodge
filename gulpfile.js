@@ -404,7 +404,7 @@ gulp.task('lint', function (done) {
 
 // Lint project files and minify them into two production files.
 gulp.task('build', function (done) {
-  runSequence('env:dev', 'wiredep:prod', 'lint', ['uglify', 'cssmin'], done);
+  runSequence('env:dev', 'wiredep:prod', ['uglify', 'cssmin'], done);
 });
 
 // Run the project tests
@@ -435,7 +435,7 @@ gulp.task('test:coverage', function (done) {
 
 // Run the project in development mode
 gulp.task('default', function (done) {
-  runSequence('env:dev', ['copyLocalEnvConfig', 'makeUploadsDir'], 'lint', ['nodemon', 'watch'], done);
+  runSequence('env:dev', ['copyLocalEnvConfig', 'makeUploadsDir'], ['nodemon', 'watch'], done);
 });
 
 // Run the project in debug mode

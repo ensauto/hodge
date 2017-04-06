@@ -23,6 +23,15 @@
           pageTitle: 'Pogfapprovals List'
         }
       })
+      .state('pogfapprovals.taskdone', {
+        url: '',
+        templateUrl: '/modules/pogfapprovals/client/views/taskdone-pogfapprovals.client.view.html',
+        controller: 'PogfapprovalsTaskDoneController',
+        controllerAs: 'vm',
+        data: {
+          pageTitle: 'Pogfapprovals Task Done'
+        }
+      })
       .state('pogfapprovals.create', {
         url: '/create',
         templateUrl: '/modules/pogfapprovals/client/views/form-pogfapproval.client.view.html',

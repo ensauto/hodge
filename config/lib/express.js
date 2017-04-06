@@ -20,6 +20,10 @@ var config = require('../config'),
   path = require('path'),
   _ = require('lodash'),
   lusca = require('lusca');
+  //passport = require('passport'),
+  //LdapStrategy = require('passport-ldapauth');
+var app = express();
+//passport.use(new LdapStrategy(config.OPTS));
 
 /**
  * Initialize local variables
@@ -88,7 +92,9 @@ module.exports.initMiddleware = function (app) {
 
   // Add the cookie parser and flash middleware
   app.use(cookieParser());
+
   app.use(flash());
+  //app.use(passport.initialize())
 };
 
 /**

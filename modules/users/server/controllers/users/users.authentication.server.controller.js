@@ -7,6 +7,7 @@ var path = require('path'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   mongoose = require('mongoose'),
   passport = require('passport'),
+  async = require('async'),
   User = mongoose.model('User');
 
 // URLs for which user can't be redirected on signin
@@ -53,6 +54,77 @@ exports.signup = function (req, res) {
  * Signin after passport authentication
  */
 exports.signin = function (req, res, next) {
+  
+  passport.authenticate('ldapauth', {session: false}, function (err, user, info) {
+    if (err || !user) {
+      //console.log('info'+info);
+      res.status(422).send(info);
+    } else {
+      // Remove sensitive data before login
+      for(var key in user){
+        console.log(key + user[key]);
+      }
+      var passportUser = user;
+      ///console.log('pas username' + passportUser.displayName + passportUser.sAMAccountName);
+      User.findOne({username: user.sAMAccountName, provider: 'ldapauth'}).exec(function(err, user) {
+        if(!user){
+          console.log('!usr');
+          user = new User();
+          console.log(passportUser.displayName+ '-' + passportUser.sAMAccountName);
+          
+          user.username = passportUser.sAMAccountName;
+          user.firstName = passportUser.givenName;
+          user.displayName = passportUser.displayName;
+          user.email = passportUser.userPrincipalName;
+          user.provider = 'ldapauth';
+          user.save(function (err, user) {
+            if (err) {
+              console.log('err'+err.message);
+              return res.status(422).send({
+                message: errorHandler.getErrorMessage(err)
+              });
+            } else {
+              // Remove sensitive data before login
+              req.login(user, function (err) {
+                if (err) {
+                  return res.status(400).send(err);
+                } else {
+                  return res.json(user);
+                }
+              });
+
+            }
+          });
+
+        } else {
+          console.log('user');
+          req.login(user, function (err) {
+            if (err) {
+              return res.status(400).send(err);
+            } else {
+              return res.json(user);
+            }
+          });
+        }
+
+      })
+      /*
+      user.password = undefined;
+      user.salt = undefined;
+      console.log('login!!!');
+
+      req.login(user, function (err) {
+        if (err) {
+          res.status(400).send(err);
+        } else {
+          res.json(user);
+        }
+      });
+      */
+    }
+  })(req, res, next);
+  
+  /*
   passport.authenticate('local', function (err, user, info) {
     if (err || !user) {
       res.status(422).send(info);
@@ -70,6 +142,8 @@ exports.signin = function (req, res, next) {
       });
     }
   })(req, res, next);
+  */
+  
 };
 
 /**
