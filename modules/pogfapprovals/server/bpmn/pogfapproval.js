@@ -20,6 +20,25 @@ exports.draftDone = function(data, done) {
 	done(data);
 }
 
+exports.need_approval_ = function(data, done) {
+	done(data);
+}
+
+exports.need_approval_$need = function(data, done) {
+	return true;
+}
+
+exports.need_approval_$nneed = function(data, done) {
+	return false;
+}
+
+exports.no_approval = function(data, done) {
+	done(data);
+}
+
+exports.no_approvalDone = function(data, done) {
+	done(data);
+}
 
 exports.approval = function(data, done) {
 	this.setProperty('users', []);
@@ -50,6 +69,10 @@ exports.is_approved_$nok = function(data, done) {
 	return data.req.body.approval === 'rejected';
 };
 
+exports.is_approved_$withdrawn = function(data, done) {
+	return false;
+}
+
 exports.approved = function(data, done) {
 	// Called after MyEnd has been reached
 	this.setProperty('task', 'approved');
@@ -64,6 +87,14 @@ exports.approved = function(data, done) {
 
 exports.approvedDone = function(data, done) {
 	done(data)
+}
+
+exports.email_recipient = function(data, done) {
+	done(data);
+}
+
+exports.email_recipientDone = function(data, done) {
+	done(data);
 }
 
 exports.rejected = function(data, done) {
