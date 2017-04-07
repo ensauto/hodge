@@ -20,6 +20,7 @@ exports.draftDone = function(data, done) {
 	done(data);
 }
 
+
 exports.approval = function(data, done) {
 	this.setProperty('users', []);
 	this.setProperty('roles', ['admin', 'ogfapprover']);

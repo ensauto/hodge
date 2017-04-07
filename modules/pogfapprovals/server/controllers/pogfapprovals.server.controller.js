@@ -193,10 +193,9 @@ exports.update = function(req, res) {
         res.jsonp(pogfapproval);
 
         // Side-effect of task done, update Userprocess
-        console.log("1");
         Userprocess.findOne({user: req.user._id}).exec(function(err, userProcess){
           if (!userProcess) {
-            Userprocess.create({user: req.user._id, taskDone: [{"processName": "pogfapproval", "processId": pogfapproval._id + ""}]}, function(err){ if(err) {console.log(err.message)}});
+            Userprocess.create({user: req.user._id, taskDone: [{"processName": "pogfapproval", "processId": pogfapproval._id + ""}]}, function(err){ if(err) {}});
           } else {
             var taskDone = userProcess.taskDone;console.log("2");
             var processIdExist = false;
@@ -206,8 +205,8 @@ exports.update = function(req, res) {
               }
             })
             if (!processIdExist) {
-              userProcess.taskDone.push({"processName": "pogfapproval", "processId": pogfapproval._id + "" });console.log('save');
-              userProcess.save(function(err) {console.log("210");
+              userProcess.taskDone.push({"processName": "pogfapproval", "processId": pogfapproval._id + "" });
+              userProcess.save(function(err) {
               });  
             }
           }
@@ -267,7 +266,6 @@ exports.list = function(req, res) {//
           foundUser = o.properties.users.indexOf(req.user._id + '');
           var status = o.properties.status;
           var endStatus = ['approved', 'rejected'];
-          console.log(endStatus.indexOf(status)); 
           if ( endStatus.indexOf(status) != -1 ) {
             return false;
           } else {
@@ -321,7 +319,7 @@ exports.listProcesses = function(req, res) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
-    } else { console.log('processes length: ' + processes.l)
+    } else { 
       res.jsonp(processes);
     }
   });

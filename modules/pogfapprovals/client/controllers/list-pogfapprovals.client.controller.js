@@ -17,7 +17,6 @@
       vm.pogfapprovals = pogfapprovals;
       usSpinnerService.stop('spinner-1');
     });
-    var str = ""; 
   }
 
   
