@@ -38,7 +38,7 @@ module.exports = {
       url: 'ldap://192.168.1.98:389',
       bindDn: 'cn=icfile, ou=IT, ou=Buildwin, dc=buildwin, dc=com',
       bindCredentials: '$8Ecjzm39t',
-      searchBase: 'ou=Buildwin, dc=buildwin, dc=com',
+      searchBase: 'dc=buildwin, dc=com',
       searchFilter: '(sAMAccountName={{username}})'
     }
   },

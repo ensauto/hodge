@@ -8,21 +8,16 @@
   
   
 
-  PogfapprovalsListController.$inject = ['PogfapprovalsService', '$scope'];
+  PogfapprovalsListController.$inject = ['PogfapprovalsService', '$scope', 'usSpinnerService'];
 
-  function PogfapprovalsListController(PogfapprovalsService, $scope) {
+  function PogfapprovalsListController(PogfapprovalsService, $scope, usSpinnerService) {
     var vm = this;
-
-    vm.pogfapprovals = PogfapprovalsService.query();
-    var str = "";
-    // while(true){
-    //   if(vm.pogfapprovals.length){
-    //     var appro = vm.pogfapprovals[0];
-    //     for(var key in appro) {
-    //       alert('key'+key);
-    //     }
-    //   }
-    // }
+    usSpinnerService.spin('spinner-1');
+    PogfapprovalsService.query().$promise.then(function (pogfapprovals) {
+      vm.pogfapprovals = pogfapprovals;
+      usSpinnerService.stop('spinner-1');
+    });
+    var str = ""; 
   }
 
   

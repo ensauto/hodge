@@ -108,19 +108,7 @@ exports.signin = function (req, res, next) {
         }
 
       })
-      /*
-      user.password = undefined;
-      user.salt = undefined;
-      console.log('login!!!');
-
-      req.login(user, function (err) {
-        if (err) {
-          res.status(400).send(err);
-        } else {
-          res.json(user);
-        }
-      });
-      */
+      
     }
   })(req, res, next);
   
@@ -143,6 +131,7 @@ exports.signin = function (req, res, next) {
     }
   })(req, res, next);
   */
+  
   
 };
 

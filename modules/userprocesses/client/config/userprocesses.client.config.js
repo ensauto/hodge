@@ -13,7 +13,7 @@
       title: 'Userprocesses',
       state: 'userprocesses',
       type: 'dropdown',
-      roles: ['user']
+      roles: ['admin']
     });
 
     // Add the dropdown list item
@@ -26,7 +26,7 @@
     menuService.addSubMenuItem('topbar', 'userprocesses', {
       title: 'Create Userprocess',
       state: 'userprocesses.create',
-      roles: ['user']
+      roles: ['admin']
     });
   }
 }());

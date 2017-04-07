@@ -19,7 +19,7 @@ var path = require('path'),
 
 var manager = new bpmn.ProcessManager({
       persistencyOptions: {
-          uri: "mongodb://admin:admin@ds137220.mlab.com:37220/hodge"
+          uri: "mongodb://hodge:hodgeAz123@192.168.1.62:27017/hodge"
       }
   });
 //manager.addBpmnFilePath(process.cwd() + "\\modules\\pogfapprovals\\server\\bpmn\\pogfapproval.bpmn"); console.log(process.cwd());
@@ -244,32 +244,39 @@ exports.delete = function(req, res) {
  * List of Pogfapprovals
  */
 exports.list = function(req, res) {//
-  PogfapprovalProcess.find().exec(function(err, processes) {
+  var processIds = req.query.processIds;
+  var findCriteria = {};
+  if (processIds) {
+    findCriteria.processId = { $in : processIds.split(',')};
+  }
+  PogfapprovalProcess.find(findCriteria).exec(function(err, processes) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else { 
-
-      processes = _.filter(processes, function(o) { 
-        var foundRole = false;
-        _.forEach(req.user.roles, function(role) {
-          if (o.properties.roles.indexOf(role)) {
-            foundRole = true;
+      if (!processIds) {
+        processes = _.filter(processes, function(o) { 
+          var foundRole = false;
+          _.forEach(req.user.roles, function(role) {
+            if (o.properties.roles.indexOf(role)) {
+              foundRole = true;
+            }
+          })
+          var foundUser = false;
+          foundUser = o.properties.users.indexOf(req.user._id + '');
+          var status = o.properties.status;
+          var endStatus = ['approved', 'rejected'];
+          console.log(endStatus.indexOf(status)); 
+          if ( endStatus.indexOf(status) != -1 ) {
+            return false;
+          } else {
+            return foundUser || foundRole;  
           }
-        })
-        var foundUser = false;
-        foundUser = o.properties.users.indexOf(req.user._id + '');
-        var status = o.properties.status;
-        var endStatus = ['approved', 'rejected'];
-        console.log(endStatus.indexOf(status)); 
-        if ( endStatus.indexOf(status) != -1 ) {
-          return false;
-        } else {
-          return foundUser || foundRole;  
-        }
-        
-      });
+          
+        });
+
+      }
       var retProcesses = [];
       _.forEach(processes, function(processOne){
 

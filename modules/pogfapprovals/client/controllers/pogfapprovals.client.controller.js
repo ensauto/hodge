@@ -6,9 +6,9 @@
     .module('pogfapprovals')
     .controller('PogfapprovalsController', PogfapprovalsController);
 
-  PogfapprovalsController.$inject = ['$scope', '$state', '$window', 'Authentication', 'pogfapprovalResolve', 'FileUploader'];
+  PogfapprovalsController.$inject = ['$scope', '$state', '$window', 'Authentication', 'pogfapprovalResolve', 'FileUploader', 'usSpinnerService'];
 
-  function PogfapprovalsController ($scope, $state, $window, Authentication, pogfapproval, FileUploader) {
+  function PogfapprovalsController ($scope, $state, $window, Authentication, pogfapproval, FileUploader, usSpinnerService) {
     var vm = this;
 
     vm.authentication = Authentication;
@@ -31,7 +31,7 @@
         $scope.$broadcast('show-errors-check-validity', 'vm.form.pogfapprovalForm');
         return false;
       }
-      
+      usSpinnerService.spin('spinner-1');
       var submitType = vm.pogfapproval.submitType;
       // TODO: move create/update logic to service
       if (vm.pogfapproval._id) {
@@ -52,9 +52,11 @@
               pogfapprovalId: res._id
             });
         }
+        usSpinnerService.stop('spinner-1');
       }
 
       function errorCallback(res) {
+        usSpinnerService.stop('spinner-1');
         vm.error = res.data.message;
       }
     }

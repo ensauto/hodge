@@ -90,22 +90,23 @@ exports.read = function(req, res) {
   var get = req.query.get;
   if (get != 'download') {
     res.jsonp(uploadfile);
+  } else {
+    var processName = uploadfile.processName;
+    switch(processName) {
+      case 'ogfapproval':
+        if(uploadfile.user._id === req.user._id || req.user.roles.indexOf('ogfapprover') || uploadfile.openAccess) {
+          //res.download()path.resolve('./modules/core/server/controllers/errors.server.controller')
+          res.download(path.resolve('/storage.hodge/uploads.process/' + uploadfile.processName + '-' + uploadfile.processId + '-' + uploadfile.fileFieldName + '-' + uploadfile.filename + '.' + uploadfile.mimeType.split('/')[1]));
+          //res.end();
+        }
+        break;
+      case 'approval':
+        break;
+      default:
+          ;
+    }
   }
-  var processName = uploadfile.processName;
-  console.log(processName);
-  switch(processName) {
-    case 'ogfapproval':
-      if(uploadfile.user._id === req.user._id || req.user.roles.indexOf('ogfapprover')) {
-        //res.download()path.resolve('./modules/core/server/controllers/errors.server.controller')
-        res.download(path.resolve('/storage.hodge/uploads.process/' + uploadfile.processName + '-' + uploadfile.processId + '-' + uploadfile.fileFieldName + '-' + uploadfile.filename + '.' + uploadfile.mimeType.split('/')[1]));
-        //res.end();
-      }
-      break;
-    case 'approval':
-      break;
-    default:
-        ;
-  }
+  
    
 };
 

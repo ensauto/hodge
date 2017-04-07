@@ -13,7 +13,7 @@
       title: 'Uploadfiles',
       state: 'uploadfiles',
       type: 'dropdown',
-      roles: ['user']
+      roles: ['admin']
     });
 
     // Add the dropdown list item
@@ -26,7 +26,7 @@
     menuService.addSubMenuItem('topbar', 'uploadfiles', {
       title: 'Create Uploadfile',
       state: 'uploadfiles.create',
-      roles: ['user']
+      roles: ['admin']
     });
   }
 }());

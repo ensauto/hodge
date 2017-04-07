@@ -81,10 +81,13 @@ exports.delete = function(req, res) {
  * List of Userprocesses
  */
 exports.list = function(req, res) {
-  console.log(req.query.processName);
-  console.log(req.params.processName);
-  var processName = req.query.processName;
-  Userprocess.find().sort('-created').populate('user', 'displayName').exec(function(err, userprocesses) {
+  var findBy = req.query.findBy;
+  var findCriteria = {};
+  if (findBy === 'userId') {
+    console.log("byUserId");
+    findCriteria.user = req.user._id;
+  }
+  Userprocess.find(findCriteria).sort('-created').populate('user', 'displayName').exec(function(err, userprocesses) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)

@@ -4,10 +4,10 @@ var defaultEnvConfig = require('./default');
 
 module.exports = {
   db: {
-    uri: 'mongodb://ds137220.mlab.com:37220/hodge' || 'mongodb://192.168.1.60:27017' || process.env.MONGOHQ_URL || process.env.MONGODB_URI || 'mongodb://' + (process.env.DB_1_PORT_27017_TCP_ADDR || 'localhost') + '/mean-dev',
+    uri: 'mongodb://192.168.1.62:27017/hodge' || process.env.MONGOHQ_URL || process.env.MONGODB_URI || 'mongodb://' + (process.env.DB_1_PORT_27017_TCP_ADDR || 'localhost') + '/mean-dev',
     options: {
-      user: 'admin',
-      pass: 'admin'
+      user: 'hodge',
+      pass: 'hodgeAz123'
     },
     // Enable mongoose debug mode
     debug: process.env.MONGODB_DEBUG || false

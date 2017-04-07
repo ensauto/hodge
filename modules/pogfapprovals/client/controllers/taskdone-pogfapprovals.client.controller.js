@@ -5,9 +5,9 @@
     .module('pogfapprovals')
     .controller('PogfapprovalsTaskDoneController', PogfapprovalsTaskDoneController);
 
-  PogfapprovalsTaskDoneController.$inject = ['PogfapprovalsService', 'UserprocessesService', '$scope', 'Authentication'];
+  PogfapprovalsTaskDoneController.$inject = ['PogfapprovalsService', 'UserprocessesService', '$scope', 'Authentication', 'usSpinnerService'];
 
-  function PogfapprovalsTaskDoneController(PogfapprovalsService, UserprocessesService, $scope, Authentication) {
+  function PogfapprovalsTaskDoneController(PogfapprovalsService, UserprocessesService, $scope, Authentication, usSpinnerService) {
     var vm = this;
     //if(UserprocessesService) 
     /*alert('I have the service'+Authentication.user);
@@ -18,12 +18,25 @@
     }
     alert(keyset);
     */
-    UserprocessesService.query({processName: "pogfapproval"}).$promise.then(function (result) {
-      alert(result.length);
+    usSpinnerService.spin('spinner-1');
+    UserprocessesService.query({findBy: "userId"}).$promise.then(function (taskDoneProcesses) {
+      
+      var userProcess = taskDoneProcesses[0];
+      var taskDone = userProcess.taskDone;
+      var processIds = []
+      for(var i = 0; i < taskDone.length; i++) {
+        if (taskDone[i].processName === "pogfapproval") {
+          processIds.push(taskDone[i].processId);
+        }
+      }
+      PogfapprovalsService.query({processIds: processIds.toString()}).$promise.then(function(pogfapprovals){
+        vm.pogfapprovals = pogfapprovals;
+        usSpinnerService.stop('spinner-1');
+      });
+
     });;
 
-    vm.pogfapprovals = PogfapprovalsService.query();
-    var str = "";
+    //vm.pogfapprovals = PogfapprovalsService.query();
     // while(true){
     //   if(vm.pogfapprovals.length){
     //     var appro = vm.pogfapprovals[0];
