@@ -30,15 +30,6 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/uploadfiles/:uploadfileId',
       permissions: ['get']
     }]
-  }, {
-    roles: ['guest'],
-    allows: [{
-      resources: '/api/uploadfiles',
-      permissions: ['get']
-    }, {
-      resources: '/api/uploadfiles/:uploadfileId',
-      permissions: ['get']
-    }]
   }]);
 };
 

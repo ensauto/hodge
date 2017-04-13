@@ -19,7 +19,8 @@
     // Add the dropdown list item
     menuService.addSubMenuItem('topbar', 'uploadfiles', {
       title: 'List Uploadfiles',
-      state: 'uploadfiles.list'
+      state: 'uploadfiles.list',
+      roles: ['user']
     });
 
     // Add the dropdown create item

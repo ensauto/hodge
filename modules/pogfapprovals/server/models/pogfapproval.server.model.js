@@ -20,8 +20,15 @@ var PogfapprovalSchema = new Schema({
   },
   purpose: {
     type: String,
-    default: '',
-    required: 'Please fill Purpose'
+    required: 'Please fill purpose'
+  },
+  recipient: {
+    type: String,
+    required: 'Please fill recipient'
+  },
+  emailText: {
+    type: String,
+    required: 'Please fill email text'
   },
   outgoingFileDesc: {
     type: String

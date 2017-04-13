@@ -10,7 +10,6 @@
 
   function PogfapprovalsController ($scope, $state, $window, Authentication, pogfapproval, FileUploader, usSpinnerService) {
     var vm = this;
-
     vm.authentication = Authentication;
     vm.pogfapproval = pogfapproval;
     vm.error = null;
@@ -33,7 +32,6 @@
       }
       usSpinnerService.spin('spinner-1');
       var submitType = vm.pogfapproval.submitType;
-      // TODO: move create/update logic to service
       if (vm.pogfapproval._id) {
         vm.pogfapproval.$update(successCallback, errorCallback);
       } else {
@@ -62,8 +60,8 @@
     }
 
     var uploader = $scope.uploader = new FileUploader({
-            url: '/api/uploadfiles?processName=ogfapproval&processId=' + vm.pogfapproval._id ///?processName=ogfapproval&processId=' + vm.pogfapproval._id
-        });
+        url: '/api/uploadfiles?processName=pogfapproval&processId=' + vm.pogfapproval._id ///?processName=ogfapproval&processId=' + vm.pogfapproval._id
+    });
 
     // FILTERS
     //if(uploader)alert("I have uploader");
@@ -122,8 +120,6 @@
     uploader.onCompleteAll = function() {
         console.info('onCompleteAll');
     };
-
-    
 
   }
 }());

@@ -47,9 +47,10 @@ exports.create = function(req, res) {console.log('create');
       });
     },
     function(pogfapproval, callback) {
-      manager.createProcess(pogfapproval._id + '', function(err, myProcess){
+      manager.createProcess({name: 'Pogfapproval', id: pogfapproval._id + ''}, function(err, myProcess){
         if (err) 
           callback(err);
+        //console.log(err.message);
         myProcess.triggerEvent("start", {req: req});
         callback(null, pogfapproval);
       });
@@ -118,7 +119,7 @@ exports.read = function(req, res) {
       })
     },
     function(callback) {
-      Uploadfile.find({processName: 'ogfapproval', processId: pogfapproval._id + ''}).exec(function(err, files) {
+      Uploadfile.find({processName: 'pogfapproval', processId: pogfapproval._id + ''}).exec(function(err, files) {
         pogfapproval.files = files;
         callback(null);
       }) 
@@ -179,13 +180,14 @@ exports.update = function(req, res) {
         _.forEach(tokens, function(token) {
           switch(token.position) {
             case 'draft':
+                req.process = myProcess;
                 myProcess.taskDone(token.position, {req: req});
                 break;
             case 'approval':
+                req.process = myProcess;
                 myProcess.taskDone(token.position, {req: req});
-                myProcess.taskDone('approved', {req: req});
-                myProcess.taskDone('rejected', {req: req});
                 break;
+
             default:
                 ;
           } 
@@ -258,20 +260,21 @@ exports.list = function(req, res) {//
         processes = _.filter(processes, function(o) { 
           var foundRole = false;
           _.forEach(req.user.roles, function(role) {
-            if (o.properties.roles.indexOf(role)) {
+            if (o.properties.roles.indexOf(role) != -1) {
               foundRole = true;
             }
           })
           var foundUser = false;
-          foundUser = o.properties.users.indexOf(req.user._id + '');
+          if (o.properties.users.indexOf(req.user._id + '') != -1) {
+            foundUser = true;
+          }   
           var status = o.properties.status;
-          var endStatus = ['approved', 'rejected'];
+          var endStatus = ['email sent', 'rejected'];
           if ( endStatus.indexOf(status) != -1 ) {
             return false;
           } else {
             return foundUser || foundRole;  
           }
-          
         });
 
       }
@@ -319,7 +322,7 @@ exports.listProcesses = function(req, res) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
-    } else { 
+    } else {
       res.jsonp(processes);
     }
   });

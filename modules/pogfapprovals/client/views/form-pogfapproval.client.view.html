@@ -8,7 +8,7 @@
   <div class="page-header">
     <h1>{{vm.pogfapproval._id ? 'Edit Outgoing File Approval' : 'New Outgoing File Approval'}}</h1>
   </div>
-  <div class="col-md-12" style="border: 1px solid #ddd;background-color: #E5E4E2" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+  <div class="col-md-12" style="border: 1px solid #ddd;" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
     <form name="vm.form.pogfapprovalForm" class="form-horizontal" ng-submit="vm.save(vm.form.pogfapprovalForm.$valid)" novalidate>
       <fieldset>
         <div class="form-group">
@@ -24,6 +24,22 @@
           <span ng-bind="vm.pogfapproval.process.ongoingTasks"></span>
           <label class="control-label" for="name">History Trace</label>
           <span ng-bind="vm.pogfapproval.process.historyTrace"></span>
+        </div>
+        
+        <div class="form-group" show-errors>
+          <label class="control-label" for="name">Recipient</label>
+          <input name="recipient" type="text" ng-model="vm.pogfapproval.recipient" id="recipient" class="form-control" placeholder="Recipient" required>
+          <div ng-messages="vm.form.pogfapprovalForm.recipient.$error" role="alert">
+            <p class="help-block error-text" ng-message="required">Pogfapproval recipient is required.</p>
+          </div>
+        </div>
+        <div class="form-group" show-errors>
+          <label class="control-label" for="name">Email Text</label>
+          <textarea name="emailText" type="text" ng-model="vm.pogfapproval.emailText" id="emailText" class="form-control" placeholder="Email Text" required>
+          </textarea>
+          <div ng-messages="vm.form.pogfapprovalForm.emailText.$error" role="alert">
+            <p class="help-block error-text" ng-message="required">Pogfapproval email content is required.</p>
+          </div>
         </div>
         <div class="form-group" show-errors>
           <label class="control-label" for="name">Purpose</label>
@@ -41,8 +57,8 @@
           <label class="control-label" for="name">Uploaded Files</label>
           <ul class="list-group">
             <li class="list-group-item" ng-repeat="file in vm.pogfapproval.files">
-              <a href="/api/uploadfiles/{{file._id}}?get=download" download="{{file.fileOriginalName}}" target="_self" role="button">{{file.fileOriginalName}}</a>
-               http://ds.com/api/uploadfiles/{{file._id}}?get=download
+              <a href="/api/uploadfiles/{{file._id}}?get=file" download="{{file.fileOriginalName}}" target="_self" role="button">{{file.fileOriginalName}}</a>
+               https://filestation.buildwin.com/api/uploadfiles/{{file._id}}?get=file
             </li>
           </ul>
         </div>
@@ -128,6 +144,7 @@
           </div>
 
         </div>
+        
 
         <h3>Approver Section</h3>
         <div class="form-group">
@@ -135,6 +152,7 @@
           <select name="approval" id="approval" data-ng-model="vm.pogfapproval.approval" class="form-control" placeholder="Approval Status">
               <option value="approved">Approve</option>
               <option value="rejected">Reject</option>
+              <option value="withdrawn">Withdrawn</option>
           </select>
         </div>
         <div class="form-group" show-errors>

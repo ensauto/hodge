@@ -36,9 +36,16 @@ var UploadfileSchema = new Schema({
   mimeType: {
     type: String
   },
+  fileSize: {
+    type: Number
+  },
   openAccess: {
     type: Boolean,
     default: false
+  }, 
+  openAccessTime: {
+    type: Date, 
+    default: Date.now
   }
 });
 

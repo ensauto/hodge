@@ -10,7 +10,8 @@ var path = require('path'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash'),
   fs = require('fs'),
-  async = require('async');
+  async = require('async'),
+  moment = require('moment');
 
 /**
  * Create a Uploadfile
@@ -27,7 +28,7 @@ exports.create = function(req, res) {
   async.waterfall([
     function(callback) {
       switch(processName) {
-        case 'ogfapproval':
+        case 'pogfapproval':
           PogfapprovalProcess.findOne({processId: processId}).exec(function(err, pogfapproval) {
             if (!pogfapproval) {
               return res.status(400).send({
@@ -49,7 +50,7 @@ exports.create = function(req, res) {
             message: errorHandler.getErrorMessage(err)
           });
         }
-        var newPath = "/storage.hodge/uploads.process/" + processName + '-' + processId + '-' + file.fieldname + '-' + file.filename + '.' + file.mimetype.split('/')[1];
+        var newPath = "/storage.hodge/uploads.process/" + processName + '-' + processId + '-' + file.fieldname + '-' + file.originalname;
         fs.writeFile(newPath, data, function (err) {
           if(err) {
             return res.status(400).send({
@@ -61,11 +62,10 @@ exports.create = function(req, res) {
       });
     }
   ], function(err, file) { 
-    var uploadfile = new Uploadfile({processName: processName, processId: processId, fileFieldName: file.fieldname, filename: file.filename, mimeType: file.mimetype, fileOriginalName: file.originalname, openAccess: false});
+    var uploadfile = new Uploadfile({processName: processName, processId: processId, fileFieldName: file.fieldname, filename: file.filename, mimeType: file.mimetype, fileOriginalName: file.originalname, fileSize: file.size,openAccess: false});
     uploadfile.user = req.user;
     uploadfile.save(function(err) {
       if (err) {
-        console.log(err, err.stack);
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
         });
@@ -88,16 +88,24 @@ exports.read = function(req, res) {
   // NOTE: This field is NOT persisted to the database, since it doesn't exist in the Article model.
   uploadfile.isCurrentUserOwner = req.user && uploadfile.user && uploadfile.user._id.toString() === req.user._id.toString();
   var get = req.query.get;
-  if (get != 'download') {
+  if (get != 'file') {
     res.jsonp(uploadfile);
   } else {
     var processName = uploadfile.processName;
     switch(processName) {
-      case 'ogfapproval':
-        if(uploadfile.user._id === req.user._id || req.user.roles.indexOf('ogfapprover') || uploadfile.openAccess) {
-          //res.download()path.resolve('./modules/core/server/controllers/errors.server.controller')
-          res.download(path.resolve('/storage.hodge/uploads.process/' + uploadfile.processName + '-' + uploadfile.processId + '-' + uploadfile.fileFieldName + '-' + uploadfile.filename + '.' + uploadfile.mimeType.split('/')[1]));
-          //res.end();
+      case 'pogfapproval':
+        if (uploadfile.user._id === req.user._id || req.user.roles.indexOf('pogfapprover')) {
+          res.download(path.resolve('/storage.hodge/uploads.process/' + uploadfile.processName + '-' + uploadfile.processId + '-' + uploadfile.fileFieldName + '-' + uploadfile.fileOriginalName));
+        }
+        else if (uploadfile.user._id != req.user._id && !req.user.roles.indexOf('pogfapprover') && uploadfile.openAccess) {
+          if(moment(uploadfile.openAccessTime).add(1, 'days').isAfter(Date.now())){
+            res.download(path.resolve('/storage.hodge/uploads.process/' + uploadfile.processName + '-' + uploadfile.processId + '-' + uploadfile.fileFieldName + '-' + uploadfile.fileOriginalName));
+          } else {
+            res.end();
+          }
+        }
+        else {
+          res.end();
         }
         break;
       case 'approval':
@@ -150,7 +158,13 @@ exports.delete = function(req, res) {
  * List of Uploadfiles
  */
 exports.list = function(req, res) {
-  Uploadfile.find().sort('-created').populate('user', 'displayName').exec(function(err, uploadfiles) {
+  var processId = req.query.processId;
+  if (!processId) {
+    return res.status(400).send({
+      message: 'processId parameter is required'
+    });
+  }
+  Uploadfile.find({processId: processId}).sort('-created').populate('user', 'displayName').exec(function(err, uploadfiles) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)

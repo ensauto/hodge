@@ -12,6 +12,12 @@ module.exports = {
     // Enable mongoose debug mode
     debug: process.env.MONGODB_DEBUG || false
   },
+  emailServer: {
+    user:    "filestation@buildwin.com.cn", 
+    password: "eVw*35sd", 
+    host:    "smtp.buildwin.com.cn", 
+    tls: {ciphers: "SSLv3"}
+  },
   log: {
     // logging with Morgan - https://github.com/expressjs/morgan
     // Can specify one of 'combined', 'common', 'dev', 'short', 'tiny'

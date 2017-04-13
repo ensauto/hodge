@@ -5,11 +5,10 @@
     .module('uploadfiles')
     .controller('UploadfilesListController', UploadfilesListController);
 
-  UploadfilesListController.$inject = ['UploadfilesService'];
+  UploadfilesListController.$inject = ['UploadfilesService', '$stateParams'];
 
-  function UploadfilesListController(UploadfilesService) {
+  function UploadfilesListController(UploadfilesService, $stateParams) {
     var vm = this;
-
-    vm.uploadfiles = UploadfilesService.query();
+    vm.uploadfiles = UploadfilesService.query({processId: $stateParams.processId});
   }
 }());

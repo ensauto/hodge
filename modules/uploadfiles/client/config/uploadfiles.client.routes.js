@@ -6,7 +6,6 @@
     .config(routeConfig);
 
   routeConfig.$inject = ['$stateProvider'];
-
   function routeConfig($stateProvider) {
     $stateProvider
       .state('uploadfiles', {
@@ -15,11 +14,12 @@
         template: '<ui-view/>'
       })
       .state('uploadfiles.list', {
-        url: '',
+        url: '/d/:processId',
         templateUrl: '/modules/uploadfiles/client/views/list-uploadfiles.client.view.html',
         controller: 'UploadfilesListController',
         controllerAs: 'vm',
         data: {
+          roles: ['user'],
           pageTitle: 'Uploadfiles List'
         }
       })

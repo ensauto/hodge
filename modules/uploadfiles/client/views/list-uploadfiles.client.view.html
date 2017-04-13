@@ -2,19 +2,14 @@
   <div class="page-header">
     <h1>Uploadfiles</h1>
   </div>
+  
   <div class="list-group">
-    <a ng-repeat="uploadfile in vm.uploadfiles"
-       ui-sref="uploadfiles.view({ uploadfileId: uploadfile._id })"
-       class="list-group-item">
-      <small class="list-group-item-text">
-        Posted on
-        <span ng-bind="uploadfile.created | date:'mediumDate'"></span>
-        by
-        <span ng-if="uploadfile.user" ng-bind="uploadfile.user.displayName"></span>
-        <span ng-if="!uploadfile.user">Deleted User</span>
-      </small>
-      <h4 class="list-group-item-heading" ng-bind="uploadfile.name"></h4>
-    </a>
+    <li ng-repeat="uploadfile in vm.uploadfiles"
+      class="list-group-item">
+        <a href="/api/uploadfiles/{{uploadfile._id}}?get=download" download="{{uploadfile.fileOriginalName}}" target="_self" ng-bind="uploadfile.fileOriginalName" role="button">{{uploadfile.fileOriginalName}}
+        </a>
+        {{uploadfile.fileOriginalName}}
+    </li>
   </div>
   <div class="alert alert-warning text-center" ng-if="vm.uploadfiles.$resolved && !vm.uploadfiles.length">
     No Uploadfiles yet, why don't you <a ui-sref="uploadfiles.create">create one</a>?
