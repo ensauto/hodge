@@ -9,7 +9,7 @@ module.exports = {
     certificate: './config/sslcerts/cert.pem',
     caBundle: './config/sslcerts/cabundle.crt'
   },
-  port: process.env.PORT || 8443,
+  port: process.env.PORT || 80,
   // Binding to 127.0.0.1 is safer in production.
   host: process.env.HOST || '0.0.0.0',
   db: {
@@ -20,6 +20,17 @@ module.exports = {
     },
     // Enable mongoose debug mode
     debug: process.env.MONGODB_DEBUG || false
+  },
+  bpmnOptions: {
+      persistencyOptions: {
+          uri: "mongodb://hodge:hodgeAz123@192.168.1.62:27017/hodge"
+      }
+  },
+  emailServerOptions: {
+    user:    "filestation@buildwin.com.cn", 
+    password: "eVw*35sd", 
+    host:    "smtp.buildwin.com.cn", 
+    tls: {ciphers: "SSLv3"}
   },
   sessionSecret: process.env.SESSION_SECRET || 'super amazing secret',
   log: {
