@@ -35,7 +35,7 @@ exports.need_approval_ = function(data, done) {
 	  	Uploadfile.find({processId: data.req.pogfapproval._id + ''}).exec(function(err, ufiles){
 	  		var totalFilesSize = 0;
 	  		_.forEach(ufiles, function(ufile){
-	  			var regEx =/[^\s]+\.(cpp|c|jpg)$/i;
+	  			var regEx =/[^\s]+\.(v|sv|vhd|c|cpp|lib|db|gds|jpg|jpeg|bmp|cdl|sp|spi|pdf|doc|xls|vsd|ods|odt|Uv2|Uv3|eww|sof|qsf|stp|tri|asm|h|bin|hex)$/i;
 	  			if (regEx.test(ufile.fileOriginalName)) {
 	  				data.needApproval = true;
 	  			}
@@ -201,7 +201,7 @@ exports.email_recipient = function(data, done) {
 	   text:	text, 
 	   from:	"filestation@buildwin.com.cn", 
 	   to:		data.req.pogfapproval.recipient,
-	   subject:	"Files for downloading"
+	   subject:	"Files for downloading from " + data.req.pogfapproval.user.displayName
 	};
 	// send the message and get a callback with an error or details of the message that was sent 
 	server.send(message, function(err, message) { 

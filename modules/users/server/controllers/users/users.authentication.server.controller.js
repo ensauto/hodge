@@ -61,19 +61,16 @@ exports.signin = function (req, res, next) {
       res.status(422).send(info);
     } else {
       // Remove sensitive data before login
-      for(var key in user){
-        console.log(key + user[key]);
-      }
+      
       var passportUser = user;
-      ///console.log('pas username' + passportUser.displayName + passportUser.sAMAccountName);
       User.findOne({username: user.sAMAccountName, provider: 'ldapauth'}).exec(function(err, user) {
         if(!user){
-          console.log('!usr');
           user = new User();
           console.log(passportUser.displayName+ '-' + passportUser.sAMAccountName);
           
           user.username = passportUser.sAMAccountName;
           user.firstName = passportUser.givenName;
+          user.lastName = passportUser.sn;
           user.displayName = passportUser.displayName;
           user.email = passportUser.userPrincipalName;
           user.provider = 'ldapauth';
