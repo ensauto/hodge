@@ -25,6 +25,7 @@ module.exports = {
         'public/lib/ng-file-upload/ng-file-upload.min.js',
         'public/lib/angular-file-upload/dist/angular-file-upload.min.js',
         'public/lib/owasp-password-strength-test/owasp-password-strength-test.js',
+        'public/lib/angular-spinner/dist/angular-spinner.min.js',
         // endbower
       ]
     },

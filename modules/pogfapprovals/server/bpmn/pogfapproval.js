@@ -4,13 +4,9 @@ User = mongoose.model('User'),
 async = require('async'), 
 _ = require('lodash'),
 path = require('path'),
+config = require(path.resolve('./config/config')),
 email = require(path.resolve('./node_modules/emailjs/email')),
-server = email.server.connect({
-   user:    "filestation@buildwin.com.cn", 
-   password: "eVw*35sd", 
-   host:    "smtp.buildwin.com.cn", 
-   tls: {ciphers: "SSLv3"}
-});
+server = email.server.connect(config.emailServerOptions);
 
 exports.start = function(data, done) {
 	done(data);

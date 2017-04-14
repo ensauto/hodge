@@ -12,7 +12,12 @@ module.exports = {
     // Enable mongoose debug mode
     debug: process.env.MONGODB_DEBUG || false
   },
-  emailServer: {
+  bpmnOptions: {
+      persistencyOptions: {
+          uri: "mongodb://hodge:hodgeAz123@192.168.1.62:27017/hodge"
+      }
+  },
+  emailServerOptions: {
     user:    "filestation@buildwin.com.cn", 
     password: "eVw*35sd", 
     host:    "smtp.buildwin.com.cn", 

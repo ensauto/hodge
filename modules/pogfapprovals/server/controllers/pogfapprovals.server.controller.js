@@ -15,14 +15,11 @@ var path = require('path'),
   async = require('async'),
   bpmn = require("bpmn"),
   fs = require('fs'),
-  moment = require('moment');
+  moment = require('moment'),
+  config = require(path.resolve('./config/config'));;
 
-var manager = new bpmn.ProcessManager({
-      persistencyOptions: {
-          uri: "mongodb://hodge:hodgeAz123@192.168.1.62:27017/hodge"
-      }
-  });
-//manager.addBpmnFilePath(process.cwd() + "\\modules\\pogfapprovals\\server\\bpmn\\pogfapproval.bpmn"); console.log(process.cwd());
+var manager = new bpmn.ProcessManager(config.bpmnOptions);
+
 manager.addBpmnFilePath(path.resolve('./modules/pogfapprovals/server/bpmn/pogfapproval.bpmn'));
 
 /**
