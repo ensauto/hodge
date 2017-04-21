@@ -5,10 +5,17 @@
     .module('pogfapprovals')
     .controller('PogfapprovalsTaskDoneController', PogfapprovalsTaskDoneController);
 
-  PogfapprovalsTaskDoneController.$inject = ['PogfapprovalsService', 'UserprocessesService', '$scope', 'Authentication', 'usSpinnerService'];
+  PogfapprovalsTaskDoneController.$inject = ['PogfapprovalsService', 'UserprocessesService', '$scope', 'Authentication', 'usSpinnerService', '$http', '$state'];
 
-  function PogfapprovalsTaskDoneController(PogfapprovalsService, UserprocessesService, $scope, Authentication, usSpinnerService) {
+  function PogfapprovalsTaskDoneController(PogfapprovalsService, UserprocessesService, $scope, Authentication, usSpinnerService, $http, $state) {
     var vm = this;
+    vm.dismiss = dismiss;
+    function dismiss(processId) {
+      $http.delete('/api/pogfapprovals/' + processId, {params: {deleteType: "dismiss"}}).then(function () {
+        $state.reload();
+      }); 
+    }
+
     usSpinnerService.spin('spinner-1');
     UserprocessesService.query({findBy: "userId"}).$promise.then(function (taskDoneProcesses) {
       
@@ -23,7 +30,11 @@
             processIds.push(taskDone[i].processId);
           }
         }
-        PogfapprovalsService.query({processIds: processIds.toString()}).$promise.then(function(pogfapprovals){
+        var processIdsRev = [];
+        while (processIds.length) {
+          processIdsRev.push(processIds.pop());
+        }
+        PogfapprovalsService.query({processIds: processIdsRev.toString()}).$promise.then(function(pogfapprovals){
           vm.pogfapprovals = pogfapprovals;
           usSpinnerService.stop('spinner-1');
         });

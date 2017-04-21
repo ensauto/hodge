@@ -220,16 +220,71 @@ exports.update = function(req, res) {
  */
 exports.delete = function(req, res) {
   var pogfapproval = req.pogfapproval;
-
-  pogfapproval.remove(function(err) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
+  var deleteType = req.query.deleteType;
+  console.log(deleteType);
+  //res.end();
+  if(deleteType === 'dismiss') {
+    Userprocess.findOne({user: req.user._id}).exec(function(err, uProcess){
+      var taskDoneList = uProcess.taskDone;
+      _.remove(taskDoneList, function(tDL){
+        return tDL.processId === (pogfapproval._id + '');
+      })
+      uProcess.taskDone = taskDoneList;
+      Userprocess.update({user: req.user._id}, { $set: {taskDone: taskDoneList}}).exec(function(err){
+        if (err) {
+          return res.status(400).send({
+            message: errorHandler.getErrorMessage(err)
+          });
+        } else {
+          res.jsonp(pogfapproval);
+        }
       });
-    } else {
-      res.jsonp(pogfapproval);
-    }
-  });
+    })
+  } else {
+    async.waterfall([
+      function (callback) {
+        Uploadfile.find({processId: pogfapproval._id + ''}).exec(function(err, uploadFiles) {
+          var uploadFile, filePath, numDeletedFiles = 0;
+          var numOfFiles = uploadFiles.length;
+          while (uploadFiles.length) {
+            uploadFile = uploadFiles.pop(); 
+            filePath = "/storage.hodge/uploads.process/" + uploadFile.processName + '-' + uploadFile.processId + '-' + uploadFile.fileFieldName + '-' + uploadFile.fileOriginalName;
+            fs.unlink(filePath, function (err) {
+
+            }); 
+          }
+          callback(null);
+        });
+      },
+      function(callback) {
+        Uploadfile.remove({processId: pogfapproval._id + '' }).exec(function(err, results){
+          if (err) {
+            return res.status(400).send({
+              message: errorHandler.getErrorMessage(err)
+            });
+          } else {
+            callback(null);
+          }
+        });
+      }
+    ], function(err, results) {
+      console.log('remove processs');
+      pogfapproval.remove(function(err) {
+        if (err) {
+          return res.status(400).send({
+            message: errorHandler.getErrorMessage(err)
+          });
+        } else {
+          res.jsonp(pogfapproval);
+        }
+      });
+      
+    });
+
+  }
+  /*
+  
+  */
 };
 
 /**
@@ -242,6 +297,7 @@ exports.list = function(req, res) {//
     findCriteria.processId = { $in : processIds.split(',')};
   }
   PogfapprovalProcess.find(findCriteria).exec(function(err, processes) {
+    
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -298,7 +354,11 @@ exports.list = function(req, res) {//
         processOne.processedBy = processOne.properties.processedBy;
         retProcesses.push(processOne);
       });
-      res.json(retProcesses);
+      var retProcessesRev = [];
+      while(retProcesses.length) {
+        retProcessesRev.push(retProcesses.pop());
+      }
+      res.json(retProcessesRev);
     }
   });
 };

@@ -11,6 +11,7 @@
       <th>Ongoing Tasks</th>
       <th>Processed By</th>
       <th>History Trace</th>
+      <th>Dismiss</th>
       
     </tr>
     <tr ng-repeat="pogfapproval in vm.pogfapprovals">
@@ -25,6 +26,10 @@
       <td><span ng-bind="pogfapproval.ongoingTasks"></span></td>
       <td><span ng-bind="pogfapproval.processedBy"></span></td>
       <td><span ng-bind="pogfapproval.historyTrace"></span></td>
+      <td>
+        <a class="btn btn-default" ng-click="vm.dismiss(pogfapproval.processId)"> Dismiss
+        </a>
+      </td>
       
     </tr>
   </table>

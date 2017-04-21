@@ -84,7 +84,6 @@ exports.list = function(req, res) {
   var findBy = req.query.findBy;
   var findCriteria = {};
   if (findBy === 'userId') {
-    console.log("byUserId");
     findCriteria.user = req.user._id;
   }
   Userprocess.find(findCriteria).sort('-created').populate('user', 'displayName').exec(function(err, userprocesses) {
