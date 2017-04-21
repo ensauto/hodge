@@ -19,7 +19,6 @@ var path = require('path'),
   config = require(path.resolve('./config/config'));;
 
 var manager = new bpmn.ProcessManager(config.bpmnOptions);
-
 manager.addBpmnFilePath(path.resolve('./modules/pogfapprovals/server/bpmn/pogfapproval.bpmn'));
 
 /**
@@ -30,7 +29,6 @@ exports.create = function(req, res) {console.log('create');
   delete req.body.comment;
   var pogfapproval = new Pogfapproval(req.body);
   pogfapproval.user = req.user;
-  console.log("c1");
   async.waterfall([
     function(callback) {
       pogfapproval.save(function(err) {
@@ -131,9 +129,10 @@ exports.read = function(req, res) {
  * Update a Pogfapproval
  */
 exports.update = function(req, res) {
+  manager = new bpmn.ProcessManager(config.bpmnOptions);
+  manager.addBpmnFilePath(path.resolve('./modules/pogfapprovals/server/bpmn/pogfapproval.bpmn'));
   var pogfapproval = req.pogfapproval;
   var submitType = req.body.submitType;
-
   async.waterfall([
     function(callback) {
       manager.get(req.pogfapproval._id + '', function(err, myProcess) {
@@ -161,17 +160,17 @@ exports.update = function(req, res) {
               pogfapproval = _.extend(pogfapproval, reqBody);
               break;
           }
-          pogfapproval.save(function(err) {
-            if (err) {
-              return res.status(400).send({
-                message: errorHandler.getErrorMessage(err)
-              });
-            } else {
-            }
-          });  
           
         });
-        res.jsonp(pogfapproval);
+        pogfapproval.save(function(err) {
+          if (err) {
+            return res.status(400).send({
+              message: errorHandler.getErrorMessage(err)
+            });
+          } else {
+            callback(null);
+          }
+        });  
         
       } else if (submitType === 'taskDone') {
         _.forEach(tokens, function(token) {
@@ -184,13 +183,12 @@ exports.update = function(req, res) {
                 req.process = myProcess;
                 myProcess.taskDone(token.position, {req: req});
                 break;
-
             default:
                 ;
           } 
         });
-        res.jsonp(pogfapproval);
-
+        callback(null);
+        
         // Side-effect of task done, update Userprocess
         Userprocess.findOne({user: req.user._id}).exec(function(err, userProcess){
           if (!userProcess) {
@@ -213,12 +211,8 @@ exports.update = function(req, res) {
       }    
     }
     ], function(err, result) {
-
+      res.jsonp(pogfapproval);
     });
-
-  
-
-  
 };
 
 /**
