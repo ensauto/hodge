@@ -222,12 +222,16 @@ exports.delete = function(req, res) {
   var pogfapproval = req.pogfapproval;
   var deleteType = req.query.deleteType;
   console.log(deleteType);
+  console.log(req.query.pogfapprovalId);
+  console.log(req.params.pogfapprovalId);
+  console.log(req.param.pogfapprovalId);
   //res.end();
   if(deleteType === 'dismiss') {
+
     Userprocess.findOne({user: req.user._id}).exec(function(err, uProcess){
       var taskDoneList = uProcess.taskDone;
       _.remove(taskDoneList, function(tDL){
-        return tDL.processId === (pogfapproval._id + '');
+        return tDL.processId === req.params.pogfapprovalId
       })
       uProcess.taskDone = taskDoneList;
       Userprocess.update({user: req.user._id}, { $set: {taskDone: taskDoneList}}).exec(function(err){
@@ -236,7 +240,11 @@ exports.delete = function(req, res) {
             message: errorHandler.getErrorMessage(err)
           });
         } else {
-          res.jsonp(pogfapproval);
+          if(!pogfapproval) {
+            res.status(200).end();
+          }else {
+            res.jsonp(pogfapproval);
+          } 
         }
       });
     })
@@ -393,11 +401,13 @@ exports.pogfapprovalByID = function(req, res, next, id) {
     if (err) {
       return next(err);
     } else if (!pogfapproval) {
+      if(!req.query.deleteType && req.query.deleteType!="dismiss")
       return res.status(404).send({
         message: 'No Pogfapproval with that identifier has been found'
       });
     }
     req.pogfapproval = pogfapproval;
+
     next();
   });
 };
