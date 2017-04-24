@@ -24,7 +24,7 @@ manager.addBpmnFilePath(path.resolve('./modules/pogfapprovals/server/bpmn/pogfap
 /**
  * Create a Pogfapproval
  */
-exports.create = function(req, res) {console.log('create');
+exports.create = function(req, res) {
   delete req.body.approval;
   delete req.body.comment;
   var pogfapproval = new Pogfapproval(req.body);
@@ -45,7 +45,6 @@ exports.create = function(req, res) {console.log('create');
       manager.createProcess({name: 'Pogfapproval', id: pogfapproval._id + ''}, function(err, myProcess){
         if (err) 
           callback(err);
-        //console.log(err.message);
         myProcess.triggerEvent("start", {req: req});
         callback(null, pogfapproval);
       });
@@ -194,7 +193,7 @@ exports.update = function(req, res) {
           if (!userProcess) {
             Userprocess.create({user: req.user._id, taskDone: [{"processName": "pogfapproval", "processId": pogfapproval._id + ""}]}, function(err){ if(err) {}});
           } else {
-            var taskDone = userProcess.taskDone;console.log("2");
+            var taskDone = userProcess.taskDone;
             var processIdExist = false;
             _.forEach(taskDone, function(tD) {
               if(tD.processId === (pogfapproval._id + '')) {
@@ -221,13 +220,7 @@ exports.update = function(req, res) {
 exports.delete = function(req, res) {
   var pogfapproval = req.pogfapproval;
   var deleteType = req.query.deleteType;
-  console.log(deleteType);
-  console.log(req.query.pogfapprovalId);
-  console.log(req.params.pogfapprovalId);
-  console.log(req.param.pogfapprovalId);
-  //res.end();
   if(deleteType === 'dismiss') {
-
     Userprocess.findOne({user: req.user._id}).exec(function(err, uProcess){
       var taskDoneList = uProcess.taskDone;
       _.remove(taskDoneList, function(tDL){
@@ -276,7 +269,6 @@ exports.delete = function(req, res) {
         });
       }
     ], function(err, results) {
-      console.log('remove processs');
       pogfapproval.remove(function(err) {
         if (err) {
           return res.status(400).send({
