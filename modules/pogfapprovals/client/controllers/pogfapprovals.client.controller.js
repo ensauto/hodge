@@ -45,6 +45,12 @@
         if (submitType === 'update') {
             $state.reload();
         }
+
+        if (submitType === 'update|taskDone') {
+            submitType = 'taskDone';
+            vm.pogfapproval.submitType = 'taskDone';
+            save(true);
+        }
         if (submitType === 'create') {
             $state.go('pogfapprovals.edit', {
               pogfapprovalId: res._id

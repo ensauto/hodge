@@ -6,17 +6,20 @@
       html, body { height: 100%; }
   </style>
   <div class="page-header">
-    <h1>{{vm.pogfapproval._id ? 'Edit Outgoing File Approval' : 'New Outgoing File Approval'}}</h1>
+    <h1>{{vm.pogfapproval._id ? 'Outgoing File Approval' : 'New Outgoing File Approval'}}</h1>
   </div>
   <div class="col-md-12" style="border: 1px solid #ddd;" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
     <form name="vm.form.pogfapprovalForm" class="form-horizontal" ng-submit="vm.save(vm.form.pogfapprovalForm.$valid)" novalidate>
       <fieldset>
         <div class="form-group">
           <button type="submit" class="btn btn-default" ng-click="vm.pogfapproval.submitType='create'" ng-show="!vm.pogfapproval._id">Create</button>
-          <button type="submit" class="btn btn-default" ng-click="vm.pogfapproval.submitType='update'" ng-show="vm.pogfapproval._id">Update</button>
-          <input class="btn btn-default" type="submit" value="Task Done" ng-click="vm.pogfapproval.submitType='taskDone'" ng-show="vm.pogfapproval._id">
+          <!--
+          <button type="submit" class="btn btn-default" ng-click="vm.pogfapproval.submitType='update'" ng-show="vm.pogfapproval._id">Update</button>-->
+          <!--
+          <input class="btn btn-default" type="submit" value="Task Done" ng-click="vm.pogfapproval.submitType='taskDone'" ng-show="vm.pogfapproval._id">-->
+          <input class="btn btn-default" type="submit" value="Task Done" ng-click="vm.pogfapproval.submitType='update|taskDone'" ng-show="vm.pogfapproval._id" ng-hide="vm.pogfapproval.process.historyTrace.indexOf('-> end') != -1">
           <a class="btn btn-default" ui-sref="pogfapprovals.list">Close</a>
-          <a class="btn" ng-click="vm.remove()">
+          <a class="btn btn-default" ng-click="vm.remove()">
             <i class="glyphicon glyphicon-trash"></i>
           </a>
         </div>
@@ -66,7 +69,7 @@
           </ul>
         </div>
 
-        <div class="row" ng-show="vm.pogfapproval._id">
+        <div class="row" ng-show="vm.pogfapproval.process.ongoingTasks.indexOf('draft')!=-1">
 
           <div class="col-md-3">
 
@@ -148,8 +151,14 @@
 
         </div>
         
-
+        <div ng-hide="vm.pogfapproval.process.ongoingTasks.indexOf('draft')!=-1"> 
         <h3>Approver Section</h3>
+        <div class="form-group" show-errors>
+          <label class="control-label" for="name">Comment</label>
+          <textarea name="comment" type="text" ng-model="vm.pogfapproval.comment" id="name" class="form-control" placeholder="Comment">
+          </textarea>
+        </div>
+        <!--
         <div class="form-group">
         <label class="control-label" for="approval">Approval Status</label>
           <select name="approval" id="approval" data-ng-model="vm.pogfapproval.approval" class="form-control" placeholder="Approval Status">
@@ -158,11 +167,24 @@
               <option value="withdrawn">Withdrawn</option>
           </select>
         </div>
-        <div class="form-group" show-errors>
-          <label class="control-label" for="name">Comment</label>
-          <textarea name="comment" type="text" ng-model="vm.pogfapproval.comment" id="name" class="form-control" placeholder="Comment">
-          </textarea>
+        -->
+        <div class="form-group">
+        <label class="control-label" for="approval">Approval Status</label>
+        <label>
+        <input type="radio" data-ng-model="vm.pogfapproval.approval" value="approved">
+        Approved
+        </label>
+        <label>
+        <input type="radio" data-ng-model="vm.pogfapproval.approval" ng-value="rejected">
+        Rejected
+        </label>
+        <label>
+        <input type="radio" data-ng-model="vm.pogfapproval.approval" value="withdrawn">
+        Withdrawn
+        </label><br/>
         </div>
+        </div>
+        
 
         <div ng-show="vm.error" class="text-danger">
           <strong ng-bind="vm.error"></strong>

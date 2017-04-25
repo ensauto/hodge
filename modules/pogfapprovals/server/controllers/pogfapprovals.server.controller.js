@@ -144,7 +144,7 @@ exports.update = function(req, res) {
     function(myProcess, callback) {
       var taskName = myProcess.getProperty('task');
       var tokens = myProcess.state.tokens;
-      if (submitType === 'update') {
+      if (submitType === 'update' || submitType === 'update|taskDone') {
         _.forEach(tokens, function(token){
           var reqBody = _.extend({}, req.body);
           switch(token.position) {

@@ -29,5 +29,8 @@
     "jquery": {
       "main": []
     }
+  },
+  "devDependencies": {
+    "angular-translate": "^2.15.1"
   }
 }

@@ -94,10 +94,10 @@ exports.read = function(req, res) {
     var processName = uploadfile.processName;
     switch(processName) {
       case 'pogfapproval':
-        if (uploadfile.user._id === req.user._id || req.user.roles.indexOf('pogfapprover')) {
+        if (req.user.roles.indexOf('pogfapprover')!=-1) {
           res.download(path.resolve('/storage.hodge/uploads.process/' + uploadfile.processName + '-' + uploadfile.processId + '-' + uploadfile.fileFieldName + '-' + uploadfile.fileOriginalName));
         }
-        else if (uploadfile.user._id != req.user._id && !req.user.roles.indexOf('pogfapprover') && uploadfile.openAccess) {
+        else if (uploadfile.openAccess) {
           if(moment(uploadfile.openAccessTime).add(1, 'days').isAfter(Date.now())){
             res.download(path.resolve('/storage.hodge/uploads.process/' + uploadfile.processName + '-' + uploadfile.processId + '-' + uploadfile.fileFieldName + '-' + uploadfile.fileOriginalName));
           } else {
