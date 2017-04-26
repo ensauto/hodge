@@ -83,15 +83,24 @@ exports.no_approval = function(data, done) {
 		}
 	], function(err, emailList) {
 		var text = "Dear approver, ";
-		text = text + "\n\nOutgoing file email sent from " + data.req.user.displayName + ".";
-		text = text + "\nThe following link is the application process for your perusal: ";
+		text = text + "\n\n The following is the outgoing files info:"
+		text = text + "\nOutgoing files email sender: " + data.req.user.displayName;
+		text = text + "\nOutgoing files send purpose: " + data.req.pogfapproval.purpose;
+		text = text + "\nOutgoing files email recipient: " + data.req.pogfapproval.recipient;
+		text = text + "\nOutgoing files list: ";
+		for (var i = 0; i < data.req.pogfapproval.files.length; i++) {
+			var file = data.req.pogfapproval.files[i];
+			text = text + "\n" + file.fileOriginalName + ' ' + file.fileSize/1000 + ' KB';
+		}
+		text = text + "\n\nThe following link is the application process for your perusal: ";
 		text = text + "\nhttps://filestation.buildwin.com/pogfapprovals/" + data.req.pogfapproval._id + "/edit";
 		text = text + "\n\n\nThis is a machine generated email, please do not reply.";
 		var message	= {
 		   text:	text, 
 		   from:	"filestation@buildwin.com.cn", 
 		   to:		emailList,
-		   subject:	"Notification: Outgoing file skip approval email sent by " + data.req.user.displayName 
+		   subject:	"Notification: Outgoing file skip approval email sent by " + data.req.user.displayName,
+		   bodyType: 'html'
 		};
 		// send the message and get a callback with an error or details of the message that was sent 
 		server.send(message, function(err, message) { 
@@ -132,14 +141,24 @@ exports.approval = function(data, done) {
 	], function(err, emailList) {
 		var text = "Dear approver,";
 		text = text + "\n\nYou have outgoing file approval from " + data.req.user.displayName + ".";
-		text = text + "\nThe following link is the application process for your action: ";
+		text = text + "\nThe following is the outgoing files info:"
+		text = text + "\nOutgoing files email sender: " + data.req.user.displayName;
+		text = text + "\nOutgoing files send purpose: " + data.req.pogfapproval.purpose;
+		text = text + "\nOutgoing files email recipient: " + data.req.pogfapproval.recipient;
+		text = text + "\nOutgoing files list: ";
+		for (var i = 0; i < data.req.pogfapproval.files.length; i++) {
+			var file = data.req.pogfapproval.files[i];
+			text = text + "\n" + file.fileOriginalName + ' ' + file.fileSize/1000 + ' KB';
+		}
+		text = text + "\n\nThe following link is the application process for your action: ";
 		text = text + "\nhttps://filestation.buildwin.com/pogfapprovals/" + data.req.pogfapproval._id + "/edit";
 		text = text + "\n\n\nThis is a machine generated email, please do not reply.";
 		var message	= {
 		   text:	text, 
 		   from:	"filestation@buildwin.com.cn", 
 		   to:		emailList,
-		   subject:	"Notification: Outgoing file awaiting approval from " + data.req.user.displayName 
+		   subject:	"Notification: Outgoing file awaiting approval from " + data.req.user.displayName ,
+		   bodyType: "html"
 		};
 		// send the message and get a callback with an error or details of the message that was sent 
 		server.send(message, function(err, message) { 
@@ -201,7 +220,8 @@ exports.email_recipient = function(data, done) {
 	   text:	text, 
 	   from:	"filestation@buildwin.com.cn", 
 	   to:		data.req.pogfapproval.recipient,
-	   subject:	"Files for downloading from " + data.req.pogfapproval.user.displayName
+	   subject:	"Files for downloading from " + data.req.pogfapproval.user.displayName,
+	   bodyType: "html"
 	};
 	// send the message and get a callback with an error or details of the message that was sent 
 	server.send(message, function(err, message) { 

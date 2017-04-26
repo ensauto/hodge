@@ -10,10 +10,18 @@
   function PogfapprovalsTaskDoneController(PogfapprovalsService, UserprocessesService, $scope, Authentication, usSpinnerService, $http, $state) {
     var vm = this;
     vm.dismiss = dismiss;
+    vm.urgentEmailApprover = urgentEmailApprover;
+    
     function dismiss(processId) {
       $http.delete('/api/pogfapprovals/' + processId, {params: {deleteType: "dismiss"}}).then(function () {
         $state.reload();
       }); 
+    }
+
+    function urgentEmailApprover(processId) {
+      $http.post('/api/pogfapprovals?processId=' + processId + '&submitType=urgentEmailApprover').then(function () {
+        alert('done');
+      })
     }
 
     usSpinnerService.spin('spinner-1');

@@ -1,6 +1,6 @@
 <section>
-  <div class="page-header">
-    <h1>Outgoing File Approval Task Done</h1>
+  <div>
+    <h3>Outgoing File Approval Task Done</h3>
   </div>
   <table class="table table-bordered table-condensed table-hover">
     <tr>
@@ -11,7 +11,7 @@
       <th>Ongoing Tasks</th>
       <th>Processed By</th>
       <th>History Trace</th>
-      <th>Dismiss</th>
+      <th>Action</th>
       
     </tr>
     <tr ng-repeat="pogfapproval in vm.pogfapprovals">
@@ -29,8 +29,9 @@
       <td>
         <a class="btn btn-default" ng-click="vm.dismiss(pogfapproval.processId)"> Dismiss
         </a>
+        <a class="btn btn-default" ng-click="vm.urgentEmailApprover(pogfapproval.processId)"> Urgent Email Approver
+        </a>
       </td>
-      
     </tr>
   </table>
   <div class="alert alert-warning text-center" ng-if="vm.pogfapprovals.$resolved && !vm.pogfapprovals.length">

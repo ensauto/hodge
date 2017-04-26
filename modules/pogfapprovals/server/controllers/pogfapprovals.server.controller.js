@@ -16,15 +16,94 @@ var path = require('path'),
   bpmn = require("bpmn"),
   fs = require('fs'),
   moment = require('moment'),
-  config = require(path.resolve('./config/config'));;
+  config = require(path.resolve('./config/config')),
+  email = require(path.resolve('./node_modules/emailjs/email'));
+  
 
-var manager = new bpmn.ProcessManager(config.bpmnOptions);
-manager.addBpmnFilePath(path.resolve('./modules/pogfapprovals/server/bpmn/pogfapproval.bpmn'));
+
 
 /**
  * Create a Pogfapproval
  */
 exports.create = function(req, res) {
+  var submitType = req.query.submitType;
+  
+  console.log(submitType);
+  if (submitType == 'urgentEmailApprover') {
+    var processId = req.query.processId;
+    var server = email.server.connect(config.emailServerOptions);
+    async.waterfall([
+    function(callback) {
+      Pogfapproval.findById(processId).populate('user', 'displayName').exec(function (err, pogfapproval) {
+      if (err) {
+        return next(err);
+      } else if (!pogfapproval) {
+        return res.status(404).send({
+          message: 'No Pogfapproval with that identifier has been found'
+        });
+      }
+      req.pogfapproval = pogfapproval;
+      callback(null);
+      });
+    },
+    function(callback) {
+      Uploadfile.find({processName: 'pogfapproval', processId: processId + ''}).exec(function(err, files) {
+        req.pogfapproval.files = files;
+        callback(null);
+      }) 
+    },
+    function(callback) {
+      var emailList = "";
+      User.find({roles: { $in: ['pogfapprover']}}).exec(function(err, pogfapprovers){
+        _.forEach(pogfapprovers, function(approver){
+          if (approver.email) {
+            if (emailList === '') {
+              emailList = emailList + approver.email; 
+            } else {
+              emailList = emailList + ', ' + approver.email;
+            }
+          }
+        }) 
+        callback(null, emailList);
+      });
+    }
+    ], function(err, emailList) {
+      var text = "Dear approver,";
+    text = text + "\n\nYou have urgent outgoing file approval from " + req.pogfapproval.user.displayName + ".";
+    text = text + "\nThe following is the outgoing files info:"
+    text = text + "\nOutgoing files email sender: " + req.pogfapproval.user.displayName;
+    text = text + "\nOutgoing files send purpose: " + req.pogfapproval.purpose;
+    text = text + "\nOutgoing files email recipient: " + req.pogfapproval.recipient;
+    text = text + "\nOutgoing files list: ";
+    for (var i = 0; i < req.pogfapproval.files.length; i++) {
+      var file = req.pogfapproval.files[i];
+      text = text + "\n" + file.fileOriginalName + ' ' + file.fileSize/1000 + ' KB';
+    }
+    text = text + "\n\nThe following link is the application process for your action: ";
+    text = text + "\nhttps://filestation.buildwin.com/pogfapprovals/" + req.pogfapproval._id + "/edit";
+    text = text + "\n\n\nThis is a machine generated email, please do not reply.";
+    var message = {
+       text:  text, 
+       from:  "filestation@buildwin.com.cn", 
+       to:    emailList,
+       subject: "Urgent Notification: Outgoing file awaiting approval from " + req.user.displayName ,
+       bodyType: "html"
+    };
+      // send the message and get a callback with an error or details of the message that was sent 
+      server.send(message, function(err, message) { 
+        console.log(err || message);
+        if (err)
+          res.status(404).end();
+        else
+          res.status(200).end();
+      });
+
+    });
+    return;
+  } 
+  
+  var manager = new bpmn.ProcessManager(config.bpmnOptions);
+  manager.addBpmnFilePath(path.resolve('./modules/pogfapprovals/server/bpmn/pogfapproval.bpmn'));
   delete req.body.approval;
   delete req.body.comment;
   var pogfapproval = new Pogfapproval(req.body);
@@ -92,11 +171,13 @@ exports.read = function(req, res) {
           }
         })
         var historyTrace = "";
+        var historyTraceArr = []
         _.forEach(historyEntries, function(h){
+          historyTraceArr.push(h.name);
           if (historyTrace === "") {
             historyTrace = historyTrace + h.name;
           } else {
-            historyTrace = historyTrace + ' -> ' + h.name; 
+            historyTrace = historyTrace + '<span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>' + h.name; 
           }
         });
         if (historyTrace === "") {
@@ -107,6 +188,7 @@ exports.read = function(req, res) {
         }
         processOne = processOne.toJSON();
         processOne["historyTrace"] = historyTrace;
+        processOne["historyTraceArr"] = historyTraceArr;
         processOne["ongoingTasks"] = ongoingTasks;
         pogfapproval.process = processOne;
         callback(null);
@@ -128,11 +210,25 @@ exports.read = function(req, res) {
  * Update a Pogfapproval
  */
 exports.update = function(req, res) {
-  manager = new bpmn.ProcessManager(config.bpmnOptions);
-  manager.addBpmnFilePath(path.resolve('./modules/pogfapprovals/server/bpmn/pogfapproval.bpmn'));
+  
   var pogfapproval = req.pogfapproval;
   var submitType = req.body.submitType;
+
+  if (submitType == 'urgentEmailApprover') {
+    console.log(submitType);
+    return;
+  } 
+
+  manager = new bpmn.ProcessManager(config.bpmnOptions);
+  manager.addBpmnFilePath(path.resolve('./modules/pogfapprovals/server/bpmn/pogfapproval.bpmn'));
+
   async.waterfall([
+    function(callback) {
+      Uploadfile.find({processName: 'pogfapproval', processId: pogfapproval._id + ''}).exec(function(err, files) {
+        pogfapproval.files = files;
+        callback(null);
+      }) 
+    },
     function(callback) {
       manager.get(req.pogfapproval._id + '', function(err, myProcess) {
         if (err) {
