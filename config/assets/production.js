@@ -10,7 +10,8 @@ module.exports = {
         'public/lib/angular-ui-notification/dist/angular-ui-notification.min.css',
         'public/lib/bootstrap/dist/css/bootstrap.min.css',
         //'public/lib/bootstrap/dist/css/bootstrap-theme.min.css',
-        'public/bootflat/css/bootflat.min.css'
+        'public/bootflat/css/bootflat.min.css',
+        'public/site.min.css'
         // endbower
       ],
       js: [

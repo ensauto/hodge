@@ -64,6 +64,7 @@ exports.need_approval_$nneed = function(data, done) {
 }
 
 exports.no_approval = function(data, done) {
+	this.setProperty('roles', ['admin', 'pogfapprover']);
 	var myProcess = data.req.process;
 	async.waterfall([
 		function(callback) {
@@ -93,7 +94,7 @@ exports.no_approval = function(data, done) {
 			text = text + "\n" + file.fileOriginalName + ' ' + file.fileSize/1000 + ' KB';
 		}
 		text = text + "\n\nThe following link is the application process for your perusal: ";
-		text = text + "\nhttps://filestation.buildwin.com/pogfapprovals/" + data.req.pogfapproval._id + "/edit";
+		text = text + "\n" + config.filestation.url + "pogfapprovals/" + data.req.pogfapproval._id + "/edit";
 		text = text + "\n\n\nThis is a machine generated email, please do not reply.";
 		var message	= {
 		   text:	text, 
@@ -151,7 +152,7 @@ exports.approval = function(data, done) {
 			text = text + "\n" + file.fileOriginalName + ' ' + file.fileSize/1000 + ' KB';
 		}
 		text = text + "\n\nThe following link is the application process for your action: ";
-		text = text + "\nhttps://filestation.buildwin.com/pogfapprovals/" + data.req.pogfapproval._id + "/edit";
+		text = text + "\n" + config.filestation.url + "pogfapprovals/" + data.req.pogfapproval._id + "/edit";
 		text = text + "\n\n\nThis is a machine generated email, please do not reply.";
 		var message	= {
 		   text:	text, 
@@ -211,7 +212,7 @@ exports.email_recipient = function(data, done) {
 
 	var text = "Dear,";
 	text = text + "\n\nPlease open the following link to download files.";
-	text = text + "\nhttps://filestation.buildwin.com/uploadfiles/d/" + data.req.pogfapproval._id;
+	text = text + "\n" + config.filestation.url + "uploadfiles/d/" + data.req.pogfapproval._id;
 	text = text + "\nMessage from sender:";
 	text = text + "\n" + data.req.pogfapproval.emailText;
 	text = text + "\n\n\nThis is a machine generated email, please do not reply.";

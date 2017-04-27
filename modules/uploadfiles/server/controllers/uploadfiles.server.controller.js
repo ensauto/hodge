@@ -50,7 +50,7 @@ exports.create = function(req, res) {
             message: errorHandler.getErrorMessage(err)
           });
         }
-        var newPath = "/storage.hodge/uploads.process/" + processName + '-' + processId + '-' + file.fieldname + '-' + file.originalname;
+        var newPath = "/storage.hodge/uploads.process/" + file.filename + '-' + file.originalname;
         fs.writeFile(newPath, data, function (err) {
           if(err) {
             return res.status(400).send({
@@ -95,11 +95,11 @@ exports.read = function(req, res) {
     switch(processName) {
       case 'pogfapproval':
         if (req.user.roles.indexOf('pogfapprover')!=-1) {
-          res.download(path.resolve('/storage.hodge/uploads.process/' + uploadfile.processName + '-' + uploadfile.processId + '-' + uploadfile.fileFieldName + '-' + uploadfile.fileOriginalName));
+          res.download(path.resolve('/storage.hodge/uploads.process/' + uploadfile.filename + '-' + uploadfile.fileOriginalName));
         }
         else if (uploadfile.openAccess) {
           if(moment(uploadfile.openAccessTime).add(1, 'days').isAfter(Date.now())){
-            res.download(path.resolve('/storage.hodge/uploads.process/' + uploadfile.processName + '-' + uploadfile.processId + '-' + uploadfile.fileFieldName + '-' + uploadfile.fileOriginalName));
+            res.download(path.resolve('/storage.hodge/uploads.process/' + uploadfile.filename + '-' + uploadfile.fileOriginalName));
           } else {
             res.end();
           }

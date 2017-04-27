@@ -23,7 +23,12 @@
       <td><span ng-bind="pogfapproval.startTime"></span></td>
       <td><span ng-bind="pogfapproval.ongoingTasks"></span></td>
       <td><span ng-bind="pogfapproval.processedBy"></span></td>
-      <td><span ng-bind="pogfapproval.historyTrace"></span></td>
+      <td>
+        <span ng-repeat="flow in  pogfapproval.historyTraceArr">
+            {{flow}} 
+            <span ng-if="!$last"><i class="glyphicon glyphicon-arrow-right"></i></span>
+        </span>
+      </td>
       
     </tr>
   </table>

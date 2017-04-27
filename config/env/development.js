@@ -23,6 +23,9 @@ module.exports = {
     host:    "smtp.buildwin.com.cn", 
     tls: {ciphers: "SSLv3"}
   },
+  filestation: {
+    url: "https://192.168.1.62/"
+  },
   log: {
     // logging with Morgan - https://github.com/expressjs/morgan
     // Can specify one of 'combined', 'common', 'dev', 'short', 'tiny'

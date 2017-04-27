@@ -25,10 +25,10 @@ exports.invokeRolesPolicies = function () {
     roles: ['user'],
     allows: [{
       resources: '/api/pogfapprovals',
-      permissions: ['get', 'post']
+      permissions: '*'
     }, {
       resources: '/api/pogfapprovals/:pogfapprovalId',
-      permissions: ['get']
+      permissions: '*'
     }]
   }, {
     roles: ['guest'],

@@ -25,11 +25,16 @@
       <td><span ng-bind="pogfapproval.startTime"></span></td>
       <td><span ng-bind="pogfapproval.ongoingTasks"></span></td>
       <td><span ng-bind="pogfapproval.processedBy"></span></td>
-      <td><span ng-bind="pogfapproval.historyTrace"></span></td>
       <td>
-        <a class="btn btn-default" ng-click="vm.dismiss(pogfapproval.processId)"> Dismiss
+        <span ng-repeat="flow in  pogfapproval.historyTraceArr">
+            {{flow}} 
+            <span ng-if="!$last"><i class="glyphicon glyphicon-arrow-right"></i></span>
+        </span>
+      </td>
+      <td>
+        <a class="btn btn-default" data-toggle="tooltip" data-placement="left" title="Dismiss" ng-click="vm.dismiss(pogfapproval.processId)"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
         </a>
-        <a class="btn btn-default" ng-click="vm.urgentEmailApprover(pogfapproval.processId)"> Urgent Email Approver
+        <a class="btn btn-default" data-toggle="tooltip" data-placement="left" title="Is urgent, email approver" ng-click="vm.urgentEmailApprover(pogfapproval.processId)"> <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
         </a>
       </td>
     </tr>

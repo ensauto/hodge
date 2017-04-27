@@ -150,12 +150,12 @@ exports.read = function(req, res) {
         var permitAccess = false;
         var userRoles = req.user.roles;
         _.forEach(userRoles, function(userRole) {
-          if (processRoles.indexOf(userRole)) {
+          if (processRoles.indexOf(userRole) != -1) {
             permitAccess = true;
           }
         });
-        if (!permitAccess) {
-          return res.status(401).send({
+        if (!permitAccess && !pogfapproval.isCurrentUserOwner) {
+          return res.status(403).send({
             message: 'Unauthorized'
           });
         }
@@ -213,13 +213,7 @@ exports.update = function(req, res) {
   
   var pogfapproval = req.pogfapproval;
   var submitType = req.body.submitType;
-
-  if (submitType == 'urgentEmailApprover') {
-    console.log(submitType);
-    return;
-  } 
-
-  manager = new bpmn.ProcessManager(config.bpmnOptions);
+  var manager = new bpmn.ProcessManager(config.bpmnOptions);
   manager.addBpmnFilePath(path.resolve('./modules/pogfapprovals/server/bpmn/pogfapproval.bpmn'));
 
   async.waterfall([
@@ -240,6 +234,7 @@ exports.update = function(req, res) {
     function(myProcess, callback) {
       var taskName = myProcess.getProperty('task');
       var tokens = myProcess.state.tokens;
+      var err = null;
       if (submitType === 'update' || submitType === 'update|taskDone') {
         _.forEach(tokens, function(token){
           var reqBody = _.extend({}, req.body);
@@ -249,7 +244,12 @@ exports.update = function(req, res) {
               delete reqBody.comment;
               pogfapproval = _.extend(pogfapproval, reqBody);
               break;
-            case 'approval': 
+            case 'approval':
+              console.log(req.user.roles[0]);
+              if (req.user.roles.indexOf('pogfapprover') == -1) {
+                err = true;
+                return;
+              }
               delete reqBody.purpose;
               delete reqBody.outgoingFileDesc;
               pogfapproval = _.extend(pogfapproval, reqBody);
@@ -257,15 +257,20 @@ exports.update = function(req, res) {
           }
           
         });
-        pogfapproval.save(function(err) {
-          if (err) {
-            return res.status(400).send({
-              message: errorHandler.getErrorMessage(err)
-            });
-          } else {
-            callback(null);
-          }
-        });  
+        if (!err) {
+          pogfapproval.save(function(err) {
+            if (err) {
+              return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+              });
+            } else {
+              callback(null);
+            }
+          });  
+        } else {
+          callback(err);
+        }
+        
         
       } else if (submitType === 'taskDone') {
         _.forEach(tokens, function(token) {
@@ -306,7 +311,15 @@ exports.update = function(req, res) {
       }    
     }
     ], function(err, result) {
-      res.jsonp(pogfapproval);
+      if(err) {
+        console.log('err');
+        res.status(403).send({
+                  message: 'Unauthorized'
+        });
+      } else {
+        res.jsonp(pogfapproval);
+      }
+      
     });
 };
 
@@ -345,7 +358,7 @@ exports.delete = function(req, res) {
           var numOfFiles = uploadFiles.length;
           while (uploadFiles.length) {
             uploadFile = uploadFiles.pop(); 
-            filePath = "/storage.hodge/uploads.process/" + uploadFile.processName + '-' + uploadFile.processId + '-' + uploadFile.fileFieldName + '-' + uploadFile.fileOriginalName;
+            filePath = "/storage.hodge/uploads.process/" + uploadFile.filename + '-' + uploadFile.fileOriginalName;
             fs.unlink(filePath, function (err) {
 
             }); 
@@ -435,7 +448,9 @@ exports.list = function(req, res) {//
           }
         })
         var historyTrace = "";
+        var historyTraceArr = [];
         _.forEach(historyEntries, function(h){
+          historyTraceArr.push(h.name);
           if (historyTrace === "") {
             historyTrace = historyTrace + h.name;
           } else {
@@ -447,6 +462,7 @@ exports.list = function(req, res) {//
         processOne.startTime = moment(startFlow.begin).fromNow();
         processOne.ongoingTasks = ongoingTasks;
         processOne.historyTrace = historyTrace;
+        processOne.historyTraceArr = historyTraceArr;
         processOne.processedBy = processOne.properties.processedBy;
         retProcesses.push(processOne);
       });
