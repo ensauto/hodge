@@ -4,9 +4,12 @@
   angular
     .module('core')
     .controller('HomeController', HomeController);
-  HomeController.$inject = ['$state'];
-  function HomeController($state) {
+  HomeController.$inject = ['$state', 'Authentication'];
+  function HomeController($state, Authentication) {
     var vm = this;
-    $state.go("pogfapprovals.list");
+    if (Authentication.user) {
+      $state.go("pogfapprovals.list");
+    }
+    
   }
 }());

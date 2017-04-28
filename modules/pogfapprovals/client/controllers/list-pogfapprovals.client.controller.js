@@ -8,15 +8,18 @@
   
   
 
-  PogfapprovalsListController.$inject = ['PogfapprovalsService', '$scope', 'usSpinnerService'];
+  PogfapprovalsListController.$inject = ['PogfapprovalsService', '$scope', 'usSpinnerService', 'Authentication'];
 
-  function PogfapprovalsListController(PogfapprovalsService, $scope, usSpinnerService) {
+  function PogfapprovalsListController(PogfapprovalsService, $scope, usSpinnerService, Authentication) {
     var vm = this;
     usSpinnerService.spin('spinner-1');
     PogfapprovalsService.query().$promise.then(function (pogfapprovals) {
       vm.pogfapprovals = pogfapprovals;
       usSpinnerService.stop('spinner-1');
     });
+    if (!Authentication.user) {
+      usSpinnerService.stop('spinner-1');
+    }
   }
 
   

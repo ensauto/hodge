@@ -34,10 +34,10 @@ exports.invokeRolesPolicies = function () {
     roles: ['guest'],
     allows: [{
       resources: '/api/pogfapprovals',
-      permissions: ['get']
+      permissions: []
     }, {
       resources: '/api/pogfapprovals/:pogfapprovalId',
-      permissions: ['get']
+      permissions: []
     }]
   }]);
 };
