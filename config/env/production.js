@@ -33,7 +33,7 @@ module.exports = {
     tls: {ciphers: "SSLv3"}
   },
   filestation: {
-    url: "https://192.168.1.62/"
+    url: "https://192.168.1.62:8443/"
   },
   sessionSecret: process.env.SESSION_SECRET || 'super amazing secret',
   log: {
