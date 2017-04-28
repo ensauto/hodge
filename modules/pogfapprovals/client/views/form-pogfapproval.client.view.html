@@ -5,29 +5,50 @@
       .another-file-over-class { border: dotted 3px green; }
       html, body { height: 100%; }
   </style>
-  <div>
+  <div class="row">
+    <div class="col-md-12">
+      <nav class="navbar navbar-inverse" style="position: fixed; z-index: 1000; margin-top:5px;
+
+height: 50px;" role="navigation">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-8">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+          </div>
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-8">
+            <a class="btn btn-primary navbar-btn" ui-sref="pogfapprovals.list">
+              <i class="glyphicon glyphicon-remove"></i>
+            </a>
+            <button type="submit" class="btn btn-primary navbar-btn" ng-click="vm.pogfapproval.submitType='create'" ng-show="!vm.pogfapproval._id">Create</button>
+            <!--
+            <button type="submit" class="btn btn-default" ng-click="vm.pogfapproval.submitType='update'" ng-show="vm.pogfapproval._id">Update</button>-->
+            <!--
+            <input class="btn btn-default" type="submit" value="Task Done" ng-click="vm.pogfapproval.submitType='taskDone'" ng-show="vm.pogfapproval._id">-->
+            <input class="btn btn-primary navbar-btn" type="submit" value="Task Done" ng-click="vm.pogfapproval.submitType='update|taskDone'" ng-hide="vm.pogfapproval.process.historyTraceArr.indexOf('end') != -1">
+            <a class="btn btn-primary" ng-click="vm.remove()" ng-show="vm.pogfapproval._id && vm.pogfapproval.process.ongoingTasks.indexOf('draft')!=-1 || vm.authentication.user.roles.indexOf('admin') != -1">
+              <i class="glyphicon glyphicon-trash"></i>
+            </a>
+
+          </div>
+        </div>
+        
+      </nav>
+    </div>
+  </div>
+  <div style="margin-top:55px">
     <h3>{{vm.pogfapproval._id ? 'Outgoing File Approval' : 'New Outgoing File Approval'}}</h3>
   </div>
+              
   <div class="col-md-12" style="padding-right: 25px;
-  padding-left: 25px;  padding-bottom: 25x; margin-bottom: 20px; background-color: #FFF8DC; border: 1px solid #ddd; " >
+  padding-left: 25px;  padding-bottom: 25x; ; margin-bottom: 20px; background-color: #FFF8DC; border: 1px solid #ddd; " >
     <form name="vm.form.pogfapprovalForm" class="form-horizontal" ng-submit="vm.save(vm.form.pogfapprovalForm.$valid)" novalidate
     nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter"
     >
       <fieldset>
-        <div class="form-group">
-          <a class="btn btn-default" ui-sref="pogfapprovals.list">
-            <i class="glyphicon glyphicon-remove"></i>
-          </a>
-          <button type="submit" class="btn btn-default" ng-click="vm.pogfapproval.submitType='create'" ng-show="!vm.pogfapproval._id">Create</button>
-          <!--
-          <button type="submit" class="btn btn-default" ng-click="vm.pogfapproval.submitType='update'" ng-show="vm.pogfapproval._id">Update</button>-->
-          <!--
-          <input class="btn btn-default" type="submit" value="Task Done" ng-click="vm.pogfapproval.submitType='taskDone'" ng-show="vm.pogfapproval._id">-->
-          <input class="btn btn-default" type="submit" value="Task Done" ng-click="vm.pogfapproval.submitType='update|taskDone'" ng-hide="vm.pogfapproval.process.historyTraceArr.indexOf('end') != -1">
-          <a class="btn btn-default" ng-click="vm.remove()" ng-show="vm.pogfapproval._id && vm.pogfapproval.process.ongoingTasks.indexOf('draft')!=-1 || vm.authentication.user.roles.indexOf('admin') != -1">
-            <i class="glyphicon glyphicon-trash"></i>
-          </a>
-        </div>
         <div class="form-group" show-errors ng-show="vm.pogfapproval._id">
           <label class="control-label" for="name">Created By</label>
           <span ng-bind="vm.pogfapproval.user.displayName">
