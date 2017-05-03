@@ -5,11 +5,13 @@
       .another-file-over-class { border: dotted 3px green; }
       html, body { height: 100%; }
   </style>
+  <form name="vm.form.pogfapprovalForm" class="form-horizontal" ng-submit="vm.save(vm.form.pogfapprovalForm.$valid)" novalidate
+      nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter"
+      >
   <div class="row">
     <div class="col-md-12">
-      <nav class="navbar navbar-inverse" style="position: fixed; z-index: 1000; margin-top:5px;
 
-height: 50px;" role="navigation">
+      <nav class="navbar navbar-inverse" style="position: fixed; z-index: 1000; margin-top:5px; height: 50px;" role="navigation">
         <div class="container-fluid">
           <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-8">
@@ -44,10 +46,8 @@ height: 50px;" role="navigation">
   </div>
               
   <div class="col-md-12" style="padding-right: 25px;
-  padding-left: 25px;  padding-bottom: 25x; ; margin-bottom: 20px; background-color: #FFF8DC; border: 1px solid #ddd; " >
-    <form name="vm.form.pogfapprovalForm" class="form-horizontal" ng-submit="vm.save(vm.form.pogfapprovalForm.$valid)" novalidate
-    nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter"
-    >
+  padding-left: 25px;  padding-bottom: 25x; margin-bottom: 20px; background-color: #FFF8DC; border: 1px solid #ddd; " >
+    
       <fieldset>
         <div class="form-group" show-errors ng-show="vm.pogfapproval._id">
           <label class="control-label" for="name">Created By</label>
@@ -61,8 +61,6 @@ height: 50px;" role="navigation">
             {{flow}} 
             <span ng-if="!$last"><i class="glyphicon glyphicon-arrow-right"></i></span>
           </span>
-          
-
           
         </div>
         
@@ -214,9 +212,8 @@ height: 50px;" role="navigation">
         <div ng-show="vm.error" class="text-danger">
           <strong ng-bind="vm.error"></strong>
         </div>
+        </div>
       </fieldset>
-      
-
-    </form>
   </div>
+  </form>
 </section>

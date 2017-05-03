@@ -7,9 +7,12 @@
   HomeController.$inject = ['$state', 'Authentication'];
   function HomeController($state, Authentication) {
     var vm = this;
+    //alert("asdfdsf");
     if (Authentication.user) {
       $state.go("pogfapprovals.list");
     }
+    
+
     
   }
 }());

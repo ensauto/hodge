@@ -18,6 +18,24 @@
       requireBase: false
     }).hashPrefix('!');
 
+    //var lang = $location.search().lang;
+    /*
+    $translateProvider.useStaticFilesLoader({
+    files: [{
+        prefix: 'locale-',
+        suffix: '.json'
+    }, {
+        prefix: '/absolute/path/to/locale-',
+        suffix: '.json'
+    }, {
+        prefix: 'another/path/to/locales/',
+        suffix: ''
+    }]
+    });
+
+    $translateProvider.preferredLanguage(lang);
+    */
+
     $httpProvider.interceptors.push('authInterceptor');
 
     // Disable debug data for production environment
