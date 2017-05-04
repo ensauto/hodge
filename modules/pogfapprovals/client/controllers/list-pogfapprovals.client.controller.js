@@ -4,11 +4,7 @@
   angular
     .module('pogfapprovals')
     .controller('PogfapprovalsListController', PogfapprovalsListController);
-
-  
-  
-
-  PogfapprovalsListController.$inject = ['PogfapprovalsService', '$scope', 'usSpinnerService', 'Authentication'];
+PogfapprovalsListController.$inject = ['PogfapprovalsService', '$scope', 'usSpinnerService', 'Authentication'];
 
   function PogfapprovalsListController(PogfapprovalsService, $scope, usSpinnerService, Authentication) {
     var vm = this;

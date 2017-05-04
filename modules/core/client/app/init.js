@@ -18,8 +18,8 @@
       requireBase: false
     }).hashPrefix('!');
 
-    //var lang = $location.search().lang;
-    /*
+    /*var lang = $location.search().lang;
+    
     $translateProvider.useStaticFilesLoader({
     files: [{
         prefix: 'locale-',
