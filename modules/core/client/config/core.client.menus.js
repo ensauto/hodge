@@ -11,10 +11,7 @@
     menuService.addMenu('account', {
       roles: ['user']
     });
-    menuService.addMenu('account2', {
-      roles: ['user']
-    });
-
+    
     menuService.addMenuItem('account', {
       title: '',
       state: 'settings',

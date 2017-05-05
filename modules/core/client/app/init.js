@@ -10,31 +10,27 @@
     .module(app.applicationModuleName)
     .config(bootstrapConfig);
 
-  bootstrapConfig.$inject = ['$compileProvider', '$locationProvider', '$httpProvider', '$logProvider'];
+  bootstrapConfig.$inject = ['$compileProvider', '$locationProvider', '$httpProvider', '$logProvider', '$translateProvider' ];
 
-  function bootstrapConfig($compileProvider, $locationProvider, $httpProvider, $logProvider) {
+  function bootstrapConfig($compileProvider, $locationProvider, $httpProvider, $logProvider, $translateProvider) {
     $locationProvider.html5Mode({
       enabled: true,
       requireBase: false
     }).hashPrefix('!');
-
-    /*var lang = $location.search().lang;
     
     $translateProvider.useStaticFilesLoader({
     files: [{
-        prefix: 'locale-',
+        prefix: '/locale/locale-',
         suffix: '.json'
     }, {
         prefix: '/absolute/path/to/locale-',
         suffix: '.json'
-    }, {
-        prefix: 'another/path/to/locales/',
-        suffix: ''
     }]
     });
 
-    $translateProvider.preferredLanguage(lang);
-    */
+    $translateProvider.preferredLanguage('cn');
+    
+    
 
     $httpProvider.interceptors.push('authInterceptor');
 

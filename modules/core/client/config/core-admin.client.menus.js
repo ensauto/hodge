@@ -14,5 +14,6 @@
       type: 'dropdown',
       roles: ['admin']
     });
+    
   }
 }());
