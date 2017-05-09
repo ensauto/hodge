@@ -30,7 +30,7 @@
             <button type="submit" class="btn btn-default" ng-click="vm.pogfapproval.submitType='update'" ng-show="vm.pogfapproval._id">Update</button>-->
             <!--
             <input class="btn btn-default" type="submit" value="Task Done" ng-click="vm.pogfapproval.submitType='taskDone'" ng-show="vm.pogfapproval._id">-->
-            <input class="btn btn-primary navbar-btn" type="submit" value="Task Done" ng-click="vm.pogfapproval.submitType='update|taskDone'" ng-hide="vm.pogfapproval.process.historyTraceArr.indexOf('end') != -1">
+            <input class="btn btn-primary navbar-btn" type="submit" value="{{'Task Done' | translate}}" ng-click="vm.pogfapproval.submitType='update|taskDone'" ng-hide="vm.pogfapproval.process.historyTraceArr.indexOf('end') != -1">
             <a class="btn btn-primary" ng-click="vm.remove()" ng-show="vm.pogfapproval._id && vm.pogfapproval.process.ongoingTasks.indexOf('draft')!=-1 || vm.authentication.user.roles.indexOf('admin') != -1">
               <i class="glyphicon glyphicon-trash"></i>
             </a>
@@ -50,13 +50,13 @@
     
       <fieldset>
         <div class="form-group" show-errors ng-show="vm.pogfapproval._id">
-          <label class="control-label" for="name">Created By</label>
+          <label class="control-label" for="name">{{'Created By' | translate}}</label>
           <span ng-bind="vm.pogfapproval.user.displayName">
           </span> |
-          <label class="control-label" for="name">Ongoing Tasks</label>
+          <label class="control-label" for="name">{{'Ongoing Tasks' | translate}}</label>
           <span ng-bind="vm.pogfapproval.process.ongoingTasks">
           </span> |
-          <label class="control-label" for="name"> History Trace</label>
+          <label class="control-label" for="name"> {{'History Trace' | translate}}</label>
           <span ng-repeat="flow in vm.pogfapproval.process.historyTraceArr track by $index">
             {{vm.pogfapproval.process.historyTraceArr[$index]}}
             <span ng-if="!$last"><i class="glyphicon glyphicon-arrow-right"></i></span>
@@ -65,6 +65,7 @@
         <div class="form-group" show-errors>
           <label class="control-label" for="name">{{'Recipient' | translate}}</label>
           <input name="recipient" type="text" ng-model="vm.pogfapproval.recipient" id="recipient" class="form-control" placeholder="Recipient" required>
+          <p class="help-block">e.g. bob@gmail.com;alice@gmail.com</p>
           <div ng-messages="vm.form.pogfapprovalForm.recipient.$error" role="alert">
             <p class="help-block error-text" ng-message="required">Pogfapproval recipient is required.</p>
           </div>
@@ -104,14 +105,14 @@
 
           <div class="col-md-3">
 
-              <h3>Select files</h3>
+              <h3>{{'Select files' | translate}}</h3>
               <input type="file" nv-file-select="" uploader="uploader" />
           </div>
 
           <div class="col-md-9" style="margin-bottom: 40px">
 
-              <h3>Upload queue</h3>
-              <p>Queue length: {{ uploader.queue.length }}</p>
+              <h3>{{'Upload queue' | translate}}</h3>
+              <p>{{'Queue length' | translate}}: {{ uploader.queue.length }}</p>
 
               <table class="table">
                   <thead>
@@ -175,9 +176,9 @@
         </div>
         
         <div ng-hide="vm.pogfapproval.process.ongoingTasks.indexOf('draft')!=-1"> 
-        <h4>Approver Section</h4>
+        <h4>{{'Approver Section' | translate}}</h4>
         <div class="form-group" show-errors>
-          <label class="control-label" for="name">Comment</label>
+          <label class="control-label" for="name">{{'Comment' | translate}}</label>
           <textarea name="comment" type="text" ng-model="vm.pogfapproval.comment" id="name" class="form-control" placeholder="Comment">
           </textarea>
         </div>
@@ -192,18 +193,18 @@
         </div>
         -->
         <div class="form-group">
-        <label class="control-label" for="approval">Approval Status</label>
+        <label class="control-label" for="approval">{{'Approval Status' | translate}}</label>
         <label>
         <input type="radio" data-ng-model="vm.pogfapproval.approval" value="approved">
-        Approved
+        {{'Approved' | translate}}
         </label>
         <label>
         <input type="radio" data-ng-model="vm.pogfapproval.approval" value="rejected">
-        Rejected
+        {{'Rejected' | translate}}
         </label>
         <label>
         <input type="radio" data-ng-model="vm.pogfapproval.approval" value="withdrawn">
-        Withdrawn
+        {{'Withdrawn' | translate}}
         </label><br/>
         </div>
          

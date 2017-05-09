@@ -6,9 +6,9 @@
     .module('pogfapprovals')
     .controller('PogfapprovalsController', PogfapprovalsController);
 
-  PogfapprovalsController.$inject = ['$scope', '$state', '$window', 'Authentication', 'pogfapprovalResolve', 'FileUploader', 'usSpinnerService', '$translate', 'UploadfilesService'];
+  PogfapprovalsController.$inject = ['$scope', '$state', '$window', 'Authentication', 'pogfapprovalResolve', 'FileUploader', '$translate', 'UploadfilesService'];
 
-  function PogfapprovalsController ($scope, $state, $window, Authentication, pogfapproval, FileUploader, usSpinnerService, $translate, UploadfilesService) {
+  function PogfapprovalsController ($scope, $state, $window, Authentication, pogfapproval, FileUploader, $translate, UploadfilesService) {
     var vm = this;
     vm.authentication = Authentication;
     vm.pogfapproval = pogfapproval;
@@ -26,9 +26,7 @@
     }
 
     function removeUploadFile(uploadFileId) {
-        alert(uploadFileId);
         UploadfilesService.delete({uploadfileId:uploadFileId}, function() {
-          alert("deleted");
           $state.reload();
         });
         
@@ -40,7 +38,6 @@
         $scope.$broadcast('show-errors-check-validity', 'vm.form.pogfapprovalForm');
         return false;
       }
-      usSpinnerService.spin('spinner-1');
       var submitType = vm.pogfapproval.submitType;
       if (vm.pogfapproval._id) {
         vm.pogfapproval.$update(successCallback, errorCallback);
@@ -66,11 +63,9 @@
               pogfapprovalId: res._id
             });
         }
-        usSpinnerService.stop('spinner-1');
       }
 
       function errorCallback(res) {
-        usSpinnerService.stop('spinner-1');
         vm.error = res.data.message;
       }
     }
@@ -86,7 +81,6 @@
     uploader.filters.push({
         name: 'syncFilter',
         fn: function(item /*{File|FileLikeObject}*/, options) {
-            console.log('syncFilter');
             return this.queue.length < 10;
         }
     });
@@ -95,7 +89,6 @@
     uploader.filters.push({
         name: 'asyncFilter',
         fn: function(item /*{File|FileLikeObject}*/, options, deferred) {
-            console.log('asyncFilter');
             setTimeout(deferred.resolve, 1e3);
         }
     });
