@@ -28,9 +28,9 @@ module.exports = {
         'public/lib/angular-file-upload/dist/angular-file-upload.min.js',
         'public/lib/owasp-password-strength-test/owasp-password-strength-test.js',
         'public/lib/angular-spinner/dist/angular-spinner.min.js',
-        'public/lib/angular-translate/angular-translate.min.js',
-        'public/lib/angular-translate-loader-url/angular-translate-loader-url.min.js',
-        'public/lib/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js',
+        'public/lib/angular-translate/angular-translate.js',
+        'public/lib/angular-translate-loader-url/angular-translate-loader-url.js',
+        'public/lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js'
         // endbower
       ]
     },

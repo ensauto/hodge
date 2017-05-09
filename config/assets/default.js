@@ -33,7 +33,7 @@ module.exports = {
         'public/lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
         'public/lib/owasp-password-strength-test/owasp-password-strength-test.js',
         'public/lib/jquery/dist/jquery.js',
-        'public/lib/bootstrap/dist/js/bootstrap.js'
+        'public/lib/bootstrap/dist/js/bootstrap.js',
 
         // endbower
       ],
