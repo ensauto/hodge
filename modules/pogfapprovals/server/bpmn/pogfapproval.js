@@ -213,8 +213,15 @@ exports.email_recipient = function(data, done) {
 	var text = "Dear,";
 	text = text + "\n\nPlease open the following link to download files.";
 	text = text + "\n" + config.filestation.url + "uploadfiles/d/" + data.req.pogfapproval._id;
+	text = text + "\nSender:";
+	text = text + "\n" + data.req.pogfapproval.user.displayName;
 	text = text + "\nMessage from sender:";
 	text = text + "\n" + data.req.pogfapproval.emailText;
+	text = text + "\nFiles list: ";
+	for (var i = 0; i < data.req.pogfapproval.files.length; i++) {
+		var file = data.req.pogfapproval.files[i];
+		text = text + "\n" + file.fileOriginalName;
+	}
 	text = text + "\n\n\nThis is a machine generated email, please do not reply.";
 	
 	var message	= {

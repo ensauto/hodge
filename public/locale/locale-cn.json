@@ -8,6 +8,17 @@
   "BUTTON_LANG_DE": "German",
   "BUTTON_LANG_EN": "English",
   "Process Id": "流程Id",
-  "Status": "状态"
-
+  "Status": "状态",
+  "Create": "创建",
+  "Created By": "发起人", 
+  "Start Time": "流程开始",
+  "Ongoing Tasks": "当前任务",
+  "Processed By": "最后处理人",
+  "History Trace": "流程轨迹", 
+  "New Outgoing File Approval": "新文件转发审批", 
+  "Recipient": "收件人",
+  "Email Text": "邮件文本",
+  "Purpose": "目的",
+  "Outgoing File Description": "文件描述",
+  "Uploaded Files": "上传文件"
 }

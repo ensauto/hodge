@@ -11,7 +11,5 @@
       $state.go("pogfapprovals.list");
     }
     
-
-    
   }
 }());

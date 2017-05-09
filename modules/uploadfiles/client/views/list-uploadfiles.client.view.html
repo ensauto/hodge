@@ -6,7 +6,9 @@
   <div class="list-group">
     <li ng-repeat="uploadfile in vm.uploadfiles"
       class="list-group-item">
-        <a href="/api/uploadfiles/{{uploadfile._id}}?get=file" download="{{uploadfile.fileOriginalName}}" target="_self" ng-bind="uploadfile.fileOriginalName" role="button">{{uploadfile.fileOriginalName}}
+        <a href="/api/uploadfiles/{{uploadfile._id}}?get=file" download="{{uploadfile.fileOriginalName}}" target="_self" ng-bind="uploadfile.fileOriginalName" role="button">
+        {{uploadfile._id}}
+        {{uploadfile.fileOriginalName}}
         </a>
     </li>
   </div>

@@ -94,10 +94,13 @@ exports.read = function(req, res) {
     var processName = uploadfile.processName;
     switch(processName) {
       case 'pogfapproval':
+        console.log('97');
         if (req.user.roles.indexOf('pogfapprover')!=-1) {
+          console.log('99');
           res.download(path.resolve('/storage.hodge/uploads.process/' + uploadfile.filename + '-' + uploadfile.fileOriginalName));
         }
         else if (uploadfile.openAccess) {
+          console.log('103');
           if(moment(uploadfile.openAccessTime).add(1, 'days').isAfter(Date.now())){
             res.download(path.resolve('/storage.hodge/uploads.process/' + uploadfile.filename + '-' + uploadfile.fileOriginalName));
           } else {

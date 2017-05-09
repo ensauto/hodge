@@ -25,7 +25,7 @@
             <a class="btn btn-primary navbar-btn" ui-sref="pogfapprovals.list">
               <i class="glyphicon glyphicon-remove"></i>
             </a>
-            <button type="submit" class="btn btn-primary navbar-btn" ng-click="vm.pogfapproval.submitType='create'" ng-show="!vm.pogfapproval._id">Create</button>
+            <button type="submit" class="btn btn-primary navbar-btn" ng-click="vm.pogfapproval.submitType='create'" ng-show="!vm.pogfapproval._id">{{'Create' | translate}}</button>
             <!--
             <button type="submit" class="btn btn-default" ng-click="vm.pogfapproval.submitType='update'" ng-show="vm.pogfapproval._id">Update</button>-->
             <!--
@@ -42,7 +42,7 @@
     </div>
   </div>
   <div style="margin-top:55px">
-    <h3>{{vm.pogfapproval._id ? 'Outgoing File Approval' : 'New Outgoing File Approval'}}</h3>
+    <h3>{{vm.pogfapproval._id ? 'Outgoing File Approval' : 'New Outgoing File Approval' | translate}}</h3>
   </div>
               
   <div class="col-md-12" style="padding-right: 25px;
@@ -57,22 +57,20 @@
           <span ng-bind="vm.pogfapproval.process.ongoingTasks">
           </span> |
           <label class="control-label" for="name"> History Trace</label>
-          <span ng-repeat="flow in vm.pogfapproval.process.historyTraceArr">
-            {{flow}} 
+          <span ng-repeat="flow in vm.pogfapproval.process.historyTraceArr track by $index">
+            {{vm.pogfapproval.process.historyTraceArr[$index]}}
             <span ng-if="!$last"><i class="glyphicon glyphicon-arrow-right"></i></span>
           </span>
-          
         </div>
-        
         <div class="form-group" show-errors>
-          <label class="control-label" for="name">Recipient</label>
+          <label class="control-label" for="name">{{'Recipient' | translate}}</label>
           <input name="recipient" type="text" ng-model="vm.pogfapproval.recipient" id="recipient" class="form-control" placeholder="Recipient" required>
           <div ng-messages="vm.form.pogfapprovalForm.recipient.$error" role="alert">
             <p class="help-block error-text" ng-message="required">Pogfapproval recipient is required.</p>
           </div>
         </div>
         <div class="form-group" show-errors>
-          <label class="control-label" for="name">Email Text</label>
+          <label class="control-label" for="name">{{'Email Text' | translate}}</label>
           <textarea name="emailText" type="text" ng-model="vm.pogfapproval.emailText" id="emailText" class="form-control" placeholder="Email Text" required>
           </textarea>
           <div ng-messages="vm.form.pogfapprovalForm.emailText.$error" role="alert">
@@ -80,22 +78,24 @@
           </div>
         </div>
         <div class="form-group" show-errors>
-          <label class="control-label" for="name">Purpose</label>
+          <label class="control-label" for="name">{{'Purpose' | translate}}</label>
           <input name="purpose" type="text" ng-model="vm.pogfapproval.purpose" id="purpose" class="form-control" placeholder="Purpose" required>
           <div ng-messages="vm.form.pogfapprovalForm.purpose.$error" role="alert">
             <p class="help-block error-text" ng-message="required">Pogfapproval purpose is required.</p>
           </div>
         </div>
         <div class="form-group" show-errors>
-          <label class="control-label" for="name">Outgoing File Description</label>
+          <label class="control-label" for="name">{{'Outgoing File Description' | translate}}</label>
           <textarea name="outgoingFileDesc" type="text" ng-model="vm.pogfapproval.outgoingFileDesc" id="outgoingFileDesc" class="form-control" placeholder="Outgoing File Description">
           </textarea>
         </div>
         <div class="form-group" ng-show="vm.pogfapproval._id">
-          <label class="control-label" for="name">Uploaded Files</label>
+          <label class="control-label" for="name">{{'Uploaded Files' | translate}}</label>
           <ul class="list-group">
             <li class="list-group-item" ng-repeat="file in vm.pogfapproval.files">
               <a href="/api/uploadfiles/{{file._id}}?get=file" download="{{file.fileOriginalName}}" target="_self" role="button">{{file.fileOriginalName}}</a>
+              <a class="btn btn-primary" ng-click="vm.removeUploadFile(file._id)" >
+              <span class="glyphicon glyphicon-trash"></span></a>
             </li>
           </ul>
         </div>

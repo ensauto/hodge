@@ -28,7 +28,6 @@ var path = require('path'),
 exports.create = function(req, res) {
   var submitType = req.query.submitType;
   
-  console.log(submitType);
   if (submitType == 'urgentEmailApprover') {
     var processId = req.query.processId;
     var server = email.server.connect(config.emailServerOptions);
@@ -171,9 +170,11 @@ exports.read = function(req, res) {
           }
         })
         var historyTrace = "";
-        var historyTraceArr = []
+        var historyTraceArr = [];
+        
         _.forEach(historyEntries, function(h){
-          historyTraceArr.push(h.name);
+          console.log(h.name);
+          historyTraceArr.push(h.name + "");
           if (historyTrace === "") {
             historyTrace = historyTrace + h.name;
           } else {
@@ -189,6 +190,7 @@ exports.read = function(req, res) {
         processOne = processOne.toJSON();
         processOne["historyTrace"] = historyTrace;
         processOne["historyTraceArr"] = historyTraceArr;
+        console.log('tracel'+historyTraceArr.length)
         processOne["ongoingTasks"] = ongoingTasks;
         pogfapproval.process = processOne;
         callback(null);

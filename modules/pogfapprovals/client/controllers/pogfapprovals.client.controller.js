@@ -6,15 +6,16 @@
     .module('pogfapprovals')
     .controller('PogfapprovalsController', PogfapprovalsController);
 
-  PogfapprovalsController.$inject = ['$scope', '$state', '$window', 'Authentication', 'pogfapprovalResolve', 'FileUploader', 'usSpinnerService'];
+  PogfapprovalsController.$inject = ['$scope', '$state', '$window', 'Authentication', 'pogfapprovalResolve', 'FileUploader', 'usSpinnerService', '$translate', 'UploadfilesService'];
 
-  function PogfapprovalsController ($scope, $state, $window, Authentication, pogfapproval, FileUploader, usSpinnerService) {
+  function PogfapprovalsController ($scope, $state, $window, Authentication, pogfapproval, FileUploader, usSpinnerService, $translate, UploadfilesService) {
     var vm = this;
     vm.authentication = Authentication;
     vm.pogfapproval = pogfapproval;
     vm.error = null;
     vm.form = {};
     vm.remove = remove;
+    vm.removeUploadFile = removeUploadFile;
     vm.save = save;
 
     // Remove existing Pogfapproval
@@ -22,6 +23,15 @@
       if ($window.confirm('Are you sure you want to delete?')) {
         vm.pogfapproval.$remove($state.go('pogfapprovals.list'));
       }
+    }
+
+    function removeUploadFile(uploadFileId) {
+        alert(uploadFileId);
+        UploadfilesService.delete({uploadfileId:uploadFileId}, function() {
+          alert("deleted");
+          $state.reload();
+        });
+        
     }
 
     // Save Pogfapproval
@@ -126,6 +136,7 @@
     uploader.onCompleteAll = function() {
         console.info('onCompleteAll');
     };
+
 
   }
 }());

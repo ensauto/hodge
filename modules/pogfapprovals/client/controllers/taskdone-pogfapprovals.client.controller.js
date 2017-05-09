@@ -5,9 +5,9 @@
     .module('pogfapprovals')
     .controller('PogfapprovalsTaskDoneController', PogfapprovalsTaskDoneController);
 
-  PogfapprovalsTaskDoneController.$inject = ['PogfapprovalsService', 'UserprocessesService', '$scope', 'Authentication', 'usSpinnerService', '$http', '$state'];
+  PogfapprovalsTaskDoneController.$inject = ['PogfapprovalsService', 'UserprocessesService', '$scope', 'Authentication', 'usSpinnerService', '$http', '$state', '$translate'];
 
-  function PogfapprovalsTaskDoneController(PogfapprovalsService, UserprocessesService, $scope, Authentication, usSpinnerService, $http, $state) {
+  function PogfapprovalsTaskDoneController(PogfapprovalsService, UserprocessesService, $scope, Authentication, usSpinnerService, $http, $state, $translate) {
     var vm = this;
     vm.dismiss = dismiss;
     vm.urgentEmailApprover = urgentEmailApprover;
