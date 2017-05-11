@@ -34,7 +34,7 @@ module.exports = {
         'public/lib/owasp-password-strength-test/owasp-password-strength-test.js',
         'public/lib/jquery/dist/jquery.js',
         'public/lib/bootstrap/dist/js/bootstrap.js',
-
+        'public/lib/cube8/browser/Cube8.js'
         // endbower
       ],
       tests: ['public/lib/angular-mocks/angular-mocks.js']

@@ -1,0 +1,22 @@
+<section>
+  <div class="page-header">
+    <h1>Datacubes</h1>
+  </div>
+  <div class="list-group">
+    <a ng-repeat="datacube in vm.datacubes"
+       ui-sref="datacubes.view({ datacubeId: datacube._id })"
+       class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span ng-bind="datacube.created | date:'mediumDate'"></span>
+        by
+        <span ng-if="datacube.user" ng-bind="datacube.user.displayName"></span>
+        <span ng-if="!datacube.user">Deleted User</span>
+      </small>
+      <h4 class="list-group-item-heading" ng-bind="datacube.name"></h4>
+    </a>
+  </div>
+  <div class="alert alert-warning text-center" ng-if="vm.datacubes.$resolved && !vm.datacubes.length">
+    No Datacubes yet, why don't you <a ui-sref="datacubes.create">create one</a>?
+  </div>
+</section>
