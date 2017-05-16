@@ -36,9 +36,9 @@ module.exports = {
   OPTS: {
     server: {
       url: 'ldap://192.168.1.98:389',
-      bindDn: 'cn=icfile, ou=IT, ou=Buildwin, dc=buildwin, dc=com',
+      bindDn: 'cn=icfile, ou=IT, ou=Buildwin, dc=buildwin, dc=local',
       bindCredentials: '$8Ecjzm39t',
-      searchBase: 'dc=buildwin, dc=com',
+      searchBase: 'dc=buildwin, dc=local',
       searchFilter: '(sAMAccountName={{username}})'
     }
   },

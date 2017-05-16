@@ -34,7 +34,13 @@ module.exports = {
         'public/lib/owasp-password-strength-test/owasp-password-strength-test.js',
         'public/lib/jquery/dist/jquery.js',
         'public/lib/bootstrap/dist/js/bootstrap.js',
-        'public/lib/cube8/browser/Cube8.js'
+        'public/lib/js-hypercube-master/src/ps.js',
+        'public/lib/js-hypercube-master/src/ps.array.js',
+        'public/lib/js-hypercube-master/src/ps.object.js',
+        'public/lib/js-hypercube-master/src/ps.FactIndex.js',
+        'public/lib/js-hypercube-master/src/ps.Cell.js',
+        'public/lib/js-hypercube-master/src/ps.Cube.js',
+        'public/lib/js-hypercube-master/src/ps.Cube.transforms.js'
         // endbower
       ],
       tests: ['public/lib/angular-mocks/angular-mocks.js']
