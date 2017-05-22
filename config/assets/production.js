@@ -31,8 +31,7 @@ module.exports = {
         'public/lib/angular-translate/angular-translate.js',
         'public/lib/angular-translate-loader-url/angular-translate-loader-url.js',
         'public/lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
-        'public/lib/js-hypercube-master/src/js-hypercube.min.js'
-        
+        'public/lib/js-hypercube-master/js-hypercube.min.js'
         // endbower
       ]
     },
