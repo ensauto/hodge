@@ -8,6 +8,19 @@
   menuConfig.$inject = ['menuService'];
 
   function menuConfig(menuService) {
+    
+    menuService.addMenuItem('topbar', {
+      title: 'Process',
+      state: 'process',
+      type: 'dropdown',
+      roles: ['admin']
+    });
+
+    menuService.addSubMenuItem('topbar', 'process', {
+      title: 'Process',
+      state: 'process.list'
+    });
+
     menuService.addMenu('account', {
       roles: ['user']
     });

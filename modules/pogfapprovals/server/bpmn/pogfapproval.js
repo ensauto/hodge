@@ -104,6 +104,7 @@ exports.no_approval = function(data, done) {
 		   bodyType: 'html'
 		};
 		// send the message and get a callback with an error or details of the message that was sent 
+		server = email.server.connect(config.emailServerOptions);
 		server.send(message, function(err, message) { 
 			console.log(err || message);
 		});
@@ -162,6 +163,7 @@ exports.approval = function(data, done) {
 		   bodyType: "html"
 		};
 		// send the message and get a callback with an error or details of the message that was sent 
+		server = email.server.connect(config.emailServerOptions);
 		server.send(message, function(err, message) { 
 			console.log(err || message);
 		});
@@ -195,6 +197,8 @@ exports.approved = function(data, done) {
 	var users = [this.getProperty('createdBy')];
 	this.setProperty('users', users);
 	this.setProperty('status', 'approved');
+	this.setProperty('processedByUserId', data.req.user._id);
+	this.setProperty('processedBy', data.req.user.displayName);
 	var req = data.req;
 	Uploadfile.update({processId: req.pogfapproval._id + ''}, {$set: { openAccess: true , openAccessTime: Date.now()}}).exec(function(err){
 	});
@@ -232,6 +236,7 @@ exports.email_recipient = function(data, done) {
 	   bodyType: "html"
 	};
 	// send the message and get a callback with an error or details of the message that was sent 
+	server = email.server.connect(config.emailServerOptions);
 	server.send(message, function(err, message) { 
 		console.log(err || message);
 		myProcess.taskDone('email recipient'); 
