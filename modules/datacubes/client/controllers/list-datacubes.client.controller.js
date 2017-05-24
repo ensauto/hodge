@@ -10,6 +10,7 @@
   function DatacubesListController(DatacubesService, $http) {
     var vm = this;
     //alert('12');
+    var cube; 
     $http({
 	  method: 'GET',
 	  url: 'sales.json'
@@ -18,7 +19,7 @@
 	    // when the response is available
 	    // response.data
 	    ps.Cube.transforms.dateLocal(response.data);
-		var cube	
+		cube	
 		= ps.Cube.deserialize(response.data, ['rentals', 'sales', 'revenue'])
 		// run some interesting queries
 		alert('Total Rentals'+ cube.sum().rentals);

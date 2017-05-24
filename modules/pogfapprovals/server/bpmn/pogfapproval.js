@@ -9,22 +9,25 @@ email = require(path.resolve('./node_modules/emailjs/email')),
 server = email.server.connect(config.emailServerOptions);
 
 exports.start = function(data, done) {
-	done(data);
-};
-
-exports.draft = function(data, done) {
 	this.setProperty('users', [data.req.user._id + '']);
 	this.setProperty('roles', []);
 	this.setProperty('processedByUserId', data.req.user._id + '');
 	this.setProperty('processedBy', data.req.user.displayName);
 	this.setProperty('createdByUserId', data.req.user._id + '');
 	this.setProperty('createdBy', data.req.user.displayName);
-	this.setProperty('task', 'draft');
+	done(data);
+};
+
+exports.draft = function(data, done) {
+	this.setProperty('users', [this.getProperty('createdByUserId')]);
+	this.setProperty('roles', []);
 	this.setProperty('status', 'not submitted');
 	done(data);
 };
 
 exports.draftDone = function(data, done) {
+	this.setProperty('processedByUserId', data.req.user._id + '');
+	this.setProperty('processedBy', data.req.user.displayName);
 	done(data);
 }
 
@@ -35,7 +38,7 @@ exports.need_approval_ = function(data, done) {
 	  	Uploadfile.find({processId: data.req.pogfapproval._id + ''}).exec(function(err, ufiles){
 	  		var totalFilesSize = 0;
 	  		_.forEach(ufiles, function(ufile){
-	  			var regEx =/[^\s]+\.(v|sv|vhd|c|cpp|lib|db|gds|jpg|jpeg|bmp|cdl|sp|spi|pdf|doc|xls|vsd|ods|odt|Uv2|Uv3|eww|sof|qsf|stp|tri|asm|h|bin|hex)$/i;
+	  			var regEx =/[^\s]+\.(v|sv|vhd|c|cpp|lib|db|gds|jpg|jpeg|bmp|png|cdl|sp|spi|pdf|doc|xls|vsd|ods|odt|Uv2|Uv3|eww|sof|qsf|stp|tri|asm|h|bin|hex)$/i;
 	  			if (regEx.test(ufile.fileOriginalName)) {
 	  				data.needApproval = true;
 	  			}
@@ -64,6 +67,7 @@ exports.need_approval_$nneed = function(data, done) {
 }
 
 exports.no_approval = function(data, done) {
+	this.setProperty('users', []);
 	this.setProperty('roles', ['admin', 'pogfapprover']);
 	var myProcess = data.req.process;
 	async.waterfall([
@@ -120,9 +124,6 @@ exports.no_approvalDone = function(data, done) {
 exports.approval = function(data, done) {
 	this.setProperty('users', []);
 	this.setProperty('roles', ['admin', 'pogfapprover']);
-	this.setProperty('processedByUserId', data.req.user._id);
-	this.setProperty('processedBy', data.req.user.displayName);
-	this.setProperty('task', 'approval');
 	this.setProperty('status', 'awaiting approval');
 	async.waterfall([
 		function(callback) {
@@ -172,6 +173,8 @@ exports.approval = function(data, done) {
 };
 
 exports.approvalDone = function(data, done) {
+	this.setProperty('processedByUserId', data.req.user._id);
+	this.setProperty('processedBy', data.req.user.displayName);
 	done(data);
 };
 
@@ -193,21 +196,18 @@ exports.is_approved_$withdrawn = function(data, done) {
 }
 
 exports.approved = function(data, done) {
-	this.setProperty('task', 'approved');
-	var users = [this.getProperty('createdBy')];
-	this.setProperty('users', users);
 	this.setProperty('status', 'approved');
-	this.setProperty('processedByUserId', data.req.user._id);
-	this.setProperty('processedBy', data.req.user.displayName);
 	var req = data.req;
 	Uploadfile.update({processId: req.pogfapproval._id + ''}, {$set: { openAccess: true , openAccessTime: Date.now()}}).exec(function(err){
 	});
 	var myProcess = data.req.process;
-	done(data);	
+	done(data);
 	myProcess.taskDone('approved', {req: data.req});
 };
 
 exports.approvedDone = function(data, done) {
+	this.setProperty('processedByUserId', data.req.user._id);
+	this.setProperty('processedBy', data.req.user.displayName);
 	done(data)
 }
 
@@ -239,26 +239,33 @@ exports.email_recipient = function(data, done) {
 	server = email.server.connect(config.emailServerOptions);
 	server.send(message, function(err, message) { 
 		console.log(err || message);
-		myProcess.taskDone('email recipient'); 
+		//err = "Error";
+		if (err) {
+			console.log(err);
+		} else {
+			myProcess.taskDone('email recipient', {req: data.req}); 	
+		}
+		
 	});
 }
 
 exports.email_recipientDone = function(data, done) {
+	this.setProperty('processedByUserId', data.req.user._id);
+	this.setProperty('processedBy', data.req.user.displayName);
 	this.setProperty('status', 'email sent');
 	done(data);
 }
 
 exports.rejected = function(data, done) {
-	this.setProperty('task', 'rejected');
-	var users = [this.getProperty('createdBy')];
-	this.setProperty('users', users);
 	this.setProperty('status', 'rejected');
 	done(data);
 	var myProcess = data.req.process;
-	myProcess.taskDone('rejected');
+	myProcess.taskDone('rejected', {req: data.req});
 };
 
 exports.rejectedDone = function(data, done) {
+	this.setProperty('processedByUserId', data.req.user._id);
+	this.setProperty('processedBy', data.req.user.displayName);
 	done(data);
 }
 

@@ -26,8 +26,15 @@
       <td><span ng-bind="pogfapproval.ongoingTasks"></span></td>
       <td><span ng-bind="pogfapproval.processedBy"></span></td>
       <td>
+        <!--
         <span ng-repeat="flow in  pogfapproval.historyTraceArr">
             {{flow}} 
+            <span ng-if="!$last"><i class="glyphicon glyphicon-arrow-right"></i></span>
+        </span>
+        -->
+        
+        <span ng-repeat="flow in pogfapproval.historyTraceArr track by $index">
+            {{pogfapproval.historyTraceArr[$index]}}
             <span ng-if="!$last"><i class="glyphicon glyphicon-arrow-right"></i></span>
         </span>
       </td>

@@ -14,10 +14,7 @@
       <th>{{'History Trace' | translate}}</th>
     </tr>
     <tr ng-repeat="pogfapproval in vm.pogfapprovals">
-      <td><a ui-sref="pogfapprovals.edit({ pogfapprovalId: pogfapproval.processId })"><span ng-bind="pogfapproval.processId"></span></a> 
-      
-      
-      
+      <td><a ui-sref="pogfapprovals.edit({ pogfapprovalId: pogfapproval.processId })"><span ng-bind="pogfapproval.processId"></span></a>
       </td>
       <td><span ng-bind="pogfapproval.properties.status"></span></td>
       <td><span ng-bind="pogfapproval.properties.createdBy"></span></td>

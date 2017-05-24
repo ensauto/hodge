@@ -285,6 +285,14 @@ exports.update = function(req, res) {
                 req.process = myProcess;
                 myProcess.taskDone(token.position, {req: req});
                 break;
+            case 'no approval': 
+                req.process = myProcess;
+                myProcess.taskDone(token.position, {req: req});
+                break;
+            case 'approved':
+                req.process = myProcess;
+                myProcess.taskDone(token.position, {req: req});
+                break;
             default:
                 ;
           } 
