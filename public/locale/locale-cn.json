@@ -36,5 +36,8 @@
   "Create_Outgoing_File_Approval": "外发文件流程发起",
   "List_Outgoing_File_Approval": "外发文件流程待办",
   "Outgoing_File_Approval": "外发文件流程",
-  "Task_Done": "外发文件流程已办"
+  "Task_Done": "流程已办",
+  "To_Do": "流程待办",
+  "Workflows": "流程",
+  "Modules": "单元"
 }

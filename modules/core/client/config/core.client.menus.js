@@ -5,20 +5,20 @@
     .module('core')
     .run(menuConfig);
 
-  menuConfig.$inject = ['menuService'];
+  menuConfig.$inject = ['menuService', '$translate'];
 
-  function menuConfig(menuService) {
+  function menuConfig(menuService, $translate) {
     
     menuService.addMenuItem('topbar', {
-      title: 'Process',
-      state: 'process',
-      type: 'dropdown',
-      roles: ['admin']
+      title: '流程',
+      state: 'workflows',
+      roles: ['user']
     });
 
-    menuService.addSubMenuItem('topbar', 'process', {
-      title: 'Process',
-      state: 'process.list'
+    menuService.addMenuItem('topbar', {
+      title: '单元',
+      state: 'modules',
+      roles: ['user']
     });
 
     menuService.addMenu('account', {
@@ -51,5 +51,6 @@
       title: 'Manage Social Accounts',
       state: 'settings.accounts'
     });
+    
   }
 }());

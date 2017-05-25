@@ -26,7 +26,7 @@
         }
       })
       .state('pogfapprovals.taskdone', {
-        url: '',
+        url: '/taskdone',
         templateUrl: '/modules/pogfapprovals/client/views/taskdone-pogfapprovals.client.view.html',
         controller: 'PogfapprovalsTaskDoneController',
         controllerAs: 'vm',
