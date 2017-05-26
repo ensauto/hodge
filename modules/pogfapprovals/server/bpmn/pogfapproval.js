@@ -198,7 +198,9 @@ exports.is_approved_$withdrawn = function(data, done) {
 exports.approved = function(data, done) {
 	this.setProperty('status', 'approved');
 	var req = data.req;
-	Uploadfile.update({processId: req.pogfapproval._id + ''}, {$set: { openAccess: true , openAccessTime: Date.now()}}).exec(function(err){
+	Uploadfile.update({processId: req.pogfapproval._id + ''}, {$set: { openAccess: true , openAccessTime: Date.now()}}, {
+     multi: true
+   }).exec(function(err){
 	});
 	var myProcess = data.req.process;
 	done(data);

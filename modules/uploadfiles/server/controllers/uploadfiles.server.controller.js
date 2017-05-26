@@ -6,6 +6,7 @@
 var path = require('path'),
   mongoose = require('mongoose'),
   Uploadfile = mongoose.model('Uploadfile'),
+  Pogfapproval = mongoose.model('Pogfapproval'),
   PogfapprovalProcess = mongoose.model('PogfapprovalProcess'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash'),
@@ -88,26 +89,40 @@ exports.read = function(req, res) {
   // NOTE: This field is NOT persisted to the database, since it doesn't exist in the Article model.
   uploadfile.isCurrentUserOwner = req.user && uploadfile.user && uploadfile.user._id.toString() === req.user._id.toString();
   var get = req.query.get;
+
   if (get != 'file') {
     res.jsonp(uploadfile);
   } else {
+    
     var processName = uploadfile.processName;
     switch(processName) {
       case 'pogfapproval':
-        console.log('97');
         if (req.user.roles.indexOf('pogfapprover')!=-1) {
-          console.log('99');
+          console.log('approver');
           res.download(path.resolve('/storage.hodge/uploads.process/' + uploadfile.filename + '-' + uploadfile.fileOriginalName));
         }
         else if (uploadfile.openAccess) {
-          console.log('103');
-          if(moment(uploadfile.openAccessTime).add(1, 'days').isAfter(Date.now())){
-            res.download(path.resolve('/storage.hodge/uploads.process/' + uploadfile.filename + '-' + uploadfile.fileOriginalName));
-          } else {
-            res.end();
-          }
+          console.log('104');
+          var processId = uploadfile.processId;
+          Pogfapproval.findById(processId).populate("user").exec(function (err, pogfapproval) {
+            if (err) {
+              return next(err);
+            } else if (!pogfapproval) {
+              return res.status(404).send({
+                message: 'No Pogfapproval with that identifier has been found'
+              });
+            }
+            if (pogfapproval.recipient.indexOf(req.user.email) != -1 && moment(uploadfile.openAccessTime).add(1, 'days').isAfter(Date.now())) {
+              console.log('download');
+              res.download(path.resolve('/storage.hodge/uploads.process/' + uploadfile.filename + '-' + uploadfile.fileOriginalName));
+            } else {
+              console.log('end');
+              res.end();
+            }
+          }); 
         }
         else {
+          console.log('129end');
           res.end();
         }
         break;
@@ -173,6 +188,9 @@ exports.list = function(req, res) {
         message: errorHandler.getErrorMessage(err)
       });
     } else {
+      for (var i = 0; i < uploadfiles.length; i++) {
+        console.log('uploadfile'+ uploadfiles[i].openAccess);
+      }
       res.jsonp(uploadfiles);
     }
   });

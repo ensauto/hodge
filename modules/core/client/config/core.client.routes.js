@@ -77,11 +77,6 @@
         controller: 'WorkflowsController',
         controllerAs: 'vm'
       })
-      .state('modules', {
-        url: '/modules',
-        templateUrl: '/modules/core/client/views/modules.client.view.html',
-        controller: 'ModulesController',
-        controllerAs: 'vm'
-      });
+      
   }
 }());

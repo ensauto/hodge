@@ -15,12 +15,7 @@
       roles: ['user']
     });
 
-    menuService.addMenuItem('topbar', {
-      title: '单元',
-      state: 'modules',
-      roles: ['user']
-    });
-
+    
     menuService.addMenu('account', {
       roles: ['user']
     });
