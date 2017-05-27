@@ -1,0 +1,22 @@
+<section>
+  <div class="page-header">
+    <h1>Dboard erpreports</h1>
+  </div>
+  <div class="list-group">
+    <a ng-repeat="dboard-erpreport in vm.dboardErpreports"
+       ui-sref="dboardErpreports.view({ dboard-erpreportId: dboard-erpreport._id })"
+       class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span ng-bind="dboardErpreport.created | date:'mediumDate'"></span>
+        by
+        <span ng-if="dboardErpreport.user" ng-bind="dboardErpreport.user.displayName"></span>
+        <span ng-if="!dboardErpreport.user">Deleted User</span>
+      </small>
+      <h4 class="list-group-item-heading" ng-bind="dboard-erpreport.name"></h4>
+    </a>
+  </div>
+  <div class="alert alert-warning text-center" ng-if="vm.dboardErpreports.$resolved && !vm.dboardErpreports.length">
+    No Dboard erpreports yet, why don't you <a ui-sref="dboardErpreports.create">create one</a>?
+  </div>
+</section>
